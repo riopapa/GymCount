@@ -10,7 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import static com.urrecliner.andriod.gxcount.Vars.isKeep;
 import static com.urrecliner.andriod.gxcount.Vars.isUp;
+import static com.urrecliner.andriod.gxcount.Vars.keepMax;
 import static com.urrecliner.andriod.gxcount.Vars.mActivity;
 import static com.urrecliner.andriod.gxcount.Vars.mContext;
 import static com.urrecliner.andriod.gxcount.Vars.max;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         isUp = utils.getBooleanArrayPref("isUp");
         sayStart = utils.getBooleanArrayPref("sayStart");
         sayReady = utils.getBooleanArrayPref("sayReady");
+        isKeep = utils.getBooleanArrayPref("isKeep");
+        keepMax = utils.getIntegerArrayPref("keepMax");
 
         if (typeName.size() < 6) {
             typeName.clear(); speed.clear(); max.clear(); isUp.clear(); sayStart.clear(); sayReady.clear();
@@ -49,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
                 isUp.add(true);
                 sayStart.add(true);
                 sayReady.add(true);
+                isKeep.add(false);
+                keepMax.add(5);
             }
             utils.setStringArrayPref("typeName",typeName);
             utils.setIntegerArrayPref("speed", speed);
@@ -56,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
             utils.setBooleanArrayPref("isUp", isUp);
             utils.setBooleanArrayPref("sayStart", sayStart);
             utils.setBooleanArrayPref("sayReady", sayReady);
-
+            utils.setBooleanArrayPref("isKeep", isKeep);
+            utils.setIntegerArrayPref("keepMax",keepMax);
         }
         recyclerView = findViewById(R.id.recyclerView);
         StaggeredGridLayoutManager SGL = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);

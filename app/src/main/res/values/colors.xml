@@ -4,15 +4,14 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="cardBack">@color/DarkSeaGreen</color>
+    <color name="cardBack">@color/SlimeGreen</color>
     <color name="cardRun">@color/MediumSpringGreen</color>
 
-    <color name="countBack">@color/Aqua</color>
+    <color name="nameFore">@color/Black</color>
+    <color name="nameBack">@color/LimeGreen</color>
+
+    <color name="countBack">@color/Chartreuse</color>
     <color name="countFore">@color/Navy</color>
-
-    <color name="nameFore">@color/EmeraldGreen</color>
-    <color name="nameBack">@color/SeaweedGreen</color>
-
 
     // Red Colors
     <color name="LightSalmon">#FFA07A</color>

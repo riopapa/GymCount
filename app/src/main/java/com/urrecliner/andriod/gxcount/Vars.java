@@ -17,6 +17,8 @@ public class Vars {
     static ArrayList<Boolean> isUp;
     static ArrayList<Boolean> sayStart;
     static ArrayList<Boolean> sayReady;
+    static ArrayList<Boolean> isKeep;
+    static ArrayList<Integer> keepMax;
 
     static Context mContext;
     static Activity mActivity;

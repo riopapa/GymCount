@@ -21,7 +21,9 @@ import android.widget.TextView;
 import static com.urrecliner.andriod.gxcount.Vars.cdtRunning;
 import static com.urrecliner.andriod.gxcount.Vars.gxCDT;
 import static com.urrecliner.andriod.gxcount.Vars.gxIdx;
+import static com.urrecliner.andriod.gxcount.Vars.isKeep;
 import static com.urrecliner.andriod.gxcount.Vars.isUp;
+import static com.urrecliner.andriod.gxcount.Vars.keepMax;
 import static com.urrecliner.andriod.gxcount.Vars.mActivity;
 import static com.urrecliner.andriod.gxcount.Vars.mContext;
 import static com.urrecliner.andriod.gxcount.Vars.max;
@@ -55,7 +57,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView tvTypeName;
         TextView tvNowCount;
         SeekBar sbSpeed;
-        ImageView imUpDown, imStart, imReady, imGo;
+        ImageView imUpDown, imKeep, imStart, imReady, imGo;
+        TextView tvKeepCount;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -64,6 +67,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             sbSpeed = itemView.findViewById(R.id.speed);
             tvNowCount = itemView.findViewById(R.id.nowCount);
             imUpDown = itemView.findViewById(R.id.up_down);
+            imKeep = itemView.findViewById(R.id.keep);
+            tvKeepCount = itemView.findViewById(R.id.keepCount);
             imStart = itemView.findViewById(R.id.start);
             imReady = itemView.findViewById(R.id.ready);
             imGo = itemView.findViewById(R.id.go);
@@ -143,6 +148,49 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
 
+
+            imKeep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gxIdx = getAdapterPosition();
+                    boolean tf = !isKeep.get(gxIdx);
+                    isKeep.set(gxIdx, tf);
+                    imKeep.setImageResource((tf) ? R.mipmap.i_keep_true:R.mipmap.i_keep_false);
+                    tvKeepCount.setTextColor((tf) ? mActivity.getResources().getColor(R.color.countFore):mActivity.getResources().getColor(R.color.countBack));
+                    utils.setBooleanArrayPref("isKeep", isKeep);
+                    imKeep.invalidate();
+                }
+            });
+
+            tvKeepCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gxIdx = getAdapterPosition();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("몇 번? (4~30)");
+                    final EditText input = new EditText(mContext);
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    String s = ""+keepMax.get(gxIdx);
+                    input.setText(s);
+                    input.setTextSize(32);
+                    builder.setView(input);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String s = input.getText().toString();
+                            int i = Integer.parseInt(s);
+                            if (i >= 4 && i <= 30) {
+                                keepMax.set(gxIdx, i);
+                                utils.setIntegerArrayPref("keepMax", keepMax);
+                                tvKeepCount.setText(s);
+                                tvKeepCount.invalidate();
+                            }
+                        }
+                    });
+                    builder.show();
+                }
+            });
+
             imUpDown.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -205,7 +253,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         void runGXCounter() {
             int color = mActivity.getResources().getColor(R.color.cardRun);
             nowCard.setCardBackgroundColor(color);
-            setupSound();
+            setupSoundTable();
             sNow = 0;
             gxCDT = new CountDownTimer(sIdx * interval, interval) {
                 public void onTick(long millisUntilFinished) {
@@ -231,9 +279,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             increase = isUp.get(gxIdx) ? 1:-1;
             interval = speed.get(gxIdx) * 100;
         }
-        private void setupSound() {
-            soundTable = new int[130];
-            soundText = new String[130];
+        private void setupSoundTable() {
+            soundTable = new int[count+40];     // count + ready + start + keep 30
+            soundText = new String[count+40];
             sIdx = 0;
             if (sayReady.get(gxIdx)) {
                 soundTable[sIdx] = R.raw.nready;
@@ -274,6 +322,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     sIdx++;
                 }
             }
+            if (isKeep.get(gxIdx)) {
+                soundTable[sIdx] = R.raw.nstart;    // R.raw.nkeep;
+                soundText[sIdx] = "버티기";
+                sIdx++;
+                for (int i = keepMax.get(gxIdx); i > 0; i--) {
+                    int mod = i%10;
+                    if (mod == 0) {
+                        int j = i / 10;
+                        soundTable[sIdx] = sound10Source[j];
+                    }
+                    else {
+                        soundTable[sIdx] = soundSource[mod];
+                    }
+                    soundText[sIdx] = ""+i;
+                    sIdx++;
+                }
+
+            }
             soundTable[sIdx] = R.raw.nok;
             soundText[sIdx] = "OK";
             sIdx++;
@@ -311,13 +377,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String s;
         holder.tvTypeName.setText(typeName.get(position));
         holder.sbSpeed.setProgress(speed.get(position));
-        s = ""+max.get(position);
-        holder.tvNowCount.setText(s);
+        s = ""+max.get(position); holder.tvNowCount.setText(s);
         holder.imUpDown.setImageResource(isUp.get(position) ? R.mipmap.i_up_true : R.mipmap.i_up_false);
         holder.imStart.setImageResource(sayStart.get(position)? R.mipmap.i_start_true:R.mipmap.i_start_false);
         holder.imReady.setImageResource(sayReady.get(position)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
-
-        //        Log.w("onBindViewHolder",position+" "+photo.getShortName());
+        holder.imKeep.setImageResource(isKeep.get(position)? R.mipmap.i_keep_true:R.mipmap.i_keep_false);
+        s = ""+keepMax.get(position); holder.tvKeepCount.setText(s);
+        holder.tvKeepCount.setTextColor(isKeep.get(position)? mActivity.getResources().getColor(R.color.countFore):mActivity.getResources().getColor(R.color.countBack));
     }
 
 }
