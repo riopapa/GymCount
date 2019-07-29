@@ -1,6 +1,9 @@
 package com.urrecliner.andriod.gxcount;
 
+import android.app.ActivityManager;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -8,6 +11,9 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import static android.content.Context.ACTIVITY_SERVICE;
+import static com.urrecliner.andriod.gxcount.Vars.mActivity;
+import static com.urrecliner.andriod.gxcount.Vars.mContext;
 import static com.urrecliner.andriod.gxcount.Vars.sharedPreferences;
 
 class Utils {
@@ -85,7 +91,6 @@ class Utils {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         JSONArray a = new JSONArray();
         for (int i = 0; i < values.size(); i++) {
-            Log.w(key + i, "" + values.get(i));
             a.put(values.get(i));
         }
         if (!values.isEmpty()) {
@@ -113,4 +118,43 @@ class Utils {
         return urls;
     }
 
+    private SoundPool soundPool = null;
+    private SoundPool savedPool;
+
+    void soundInitiate() {
+
+        SoundPool.Builder builder;
+        AudioAttributes audioAttrib = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        builder = new SoundPool.Builder();
+        builder.setAudioAttributes(audioAttrib).setMaxStreams(5);
+        savedPool = builder.build();
+    }
+
+
+    void soundPlay(int soundId) {
+        soundPool = savedPool;
+        final int soundNbr = soundPool.load(mContext, soundId, 1);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                soundPool.play(soundNbr, 1f, 1f, 0, 0, 1f);
+                soundPool.release();
+            }
+
+        });
+    }
+
+    void sayMemory() {
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager) mActivity.getSystemService(ACTIVITY_SERVICE);
+        activityManager.getMemoryInfo(mi);
+        double availableMegs = mi.availMem / 0x100000L;
+
+//Percentage can be calculated for API 16+
+        double percentAvail = mi.availMem / (double)mi.totalMem * 100.0;
+        Log.w("Mem","avail:"+availableMegs+" per:"+percentAvail);
+    }
 }

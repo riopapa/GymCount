@@ -5,11 +5,13 @@ import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +21,18 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import static com.urrecliner.andriod.gxcount.Vars.cdtRunning;
+import static com.urrecliner.andriod.gxcount.Vars.countMax;
 import static com.urrecliner.andriod.gxcount.Vars.gxCDT;
 import static com.urrecliner.andriod.gxcount.Vars.gxIdx;
-import static com.urrecliner.andriod.gxcount.Vars.isKeep;
 import static com.urrecliner.andriod.gxcount.Vars.isUp;
+import static com.urrecliner.andriod.gxcount.Vars.keep123;
 import static com.urrecliner.andriod.gxcount.Vars.keepMax;
 import static com.urrecliner.andriod.gxcount.Vars.mActivity;
 import static com.urrecliner.andriod.gxcount.Vars.mContext;
-import static com.urrecliner.andriod.gxcount.Vars.max;
 import static com.urrecliner.andriod.gxcount.Vars.sayReady;
 import static com.urrecliner.andriod.gxcount.Vars.sayStart;
 import static com.urrecliner.andriod.gxcount.Vars.sound10Source;
+import static com.urrecliner.andriod.gxcount.Vars.soundShort;
 import static com.urrecliner.andriod.gxcount.Vars.soundSource;
 import static com.urrecliner.andriod.gxcount.Vars.speed;
 import static com.urrecliner.andriod.gxcount.Vars.typeName;
@@ -37,10 +40,16 @@ import static com.urrecliner.andriod.gxcount.Vars.utils;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    static TextView nowTVCount;
-    static ImageView nowIVGo;
-    static CardView nowCard;
-    static MediaPlayer mediaPlayer;
+    private static TextView nowTVCount;
+    private static ImageView nowIVGo;
+    private static CardView nowCard;
+    private static MediaPlayer mediaPlayer;
+    private static String sReady = "<준비>";
+    private static String sStart = "<시작>";
+    private static String sKeep = "<버티기>";
+    private static String sNoMore = "<그만>";
+    private static MediaPlayer mPs[];
+
     @Override
     public int getItemCount() {
         return typeName.size();
@@ -57,7 +66,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView tvTypeName;
         TextView tvNowCount;
         SeekBar sbSpeed;
-        ImageView imUpDown, imKeep, imStart, imReady, imGo;
+        ImageView ivUpDown, ivKeep, ivStart, ivReady, ivGo;
         TextView tvKeepCount;
 
         ViewHolder(final View itemView) {
@@ -66,12 +75,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tvTypeName = itemView.findViewById(R.id.typeName);
             sbSpeed = itemView.findViewById(R.id.speed);
             tvNowCount = itemView.findViewById(R.id.nowCount);
-            imUpDown = itemView.findViewById(R.id.up_down);
-            imKeep = itemView.findViewById(R.id.keep);
+            ivUpDown = itemView.findViewById(R.id.up_down);
+            ivKeep = itemView.findViewById(R.id.keep);
             tvKeepCount = itemView.findViewById(R.id.keepCount);
-            imStart = itemView.findViewById(R.id.start);
-            imReady = itemView.findViewById(R.id.ready);
-            imGo = itemView.findViewById(R.id.go);
+            ivStart = itemView.findViewById(R.id.start);
+            ivReady = itemView.findViewById(R.id.ready);
+            ivGo = itemView.findViewById(R.id.go);
 
             tvTypeName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -106,9 +115,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     speed.set(gxIdx, seekBar.getProgress());
                     utils.setIntegerArrayPref("speed", speed);
                     if (cdtRunning) {
+                        SystemClock.sleep(interval/2);
+                        interval = progress * 100;
+                        int cdtDownTime = (soundText.length-sNow) * interval + 10;
                         gxCDT.cancel();
-                        interval = speed.get(gxIdx) * 100;
-                        runGXCounter();
+                        runCountDownTimer(cdtDownTime);
                     }
                 }
                 @Override
@@ -124,10 +135,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle("몇 번? (4~120)");
+                    builder.setTitle("몇 번? (4~60)");
                     final EditText input = new EditText(mContext);
                     input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    String s = ""+max.get(gxIdx);
+                    String s = ""+ countMax.get(gxIdx);
                     input.setText(s);
                     input.setTextSize(32);
                     builder.setView(input);
@@ -136,9 +147,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         public void onClick(DialogInterface dialog, int which) {
                             String s = input.getText().toString();
                             int i = Integer.parseInt(s);
-                            if (i >= 4 && i <= 120) {
-                                max.set(gxIdx, i);
-                                utils.setIntegerArrayPref("max", max);
+                            if (i >= 4 && i <= 70) {
+                                countMax.set(gxIdx, i);
+                                utils.setIntegerArrayPref("countMax", countMax);
                                 tvNowCount.setText(s);
                                 tvNowCount.invalidate();
                             }
@@ -148,17 +159,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
 
-
-            imKeep.setOnClickListener(new View.OnClickListener() {
+            ivKeep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
-                    boolean tf = !isKeep.get(gxIdx);
-                    isKeep.set(gxIdx, tf);
-                    imKeep.setImageResource((tf) ? R.mipmap.i_keep_true:R.mipmap.i_keep_false);
-                    tvKeepCount.setTextColor((tf) ? mActivity.getResources().getColor(R.color.countFore):mActivity.getResources().getColor(R.color.countBack));
-                    utils.setBooleanArrayPref("isKeep", isKeep);
-                    imKeep.invalidate();
+                    int keep_123 = keep123.get(gxIdx) + 1;
+                    if (keep_123 > 2)
+                        keep_123 = 0;
+                    keep123.set(gxIdx, keep_123);
+                    if (keep_123 == 0)
+                        ivKeep.setImageResource(R.mipmap.i_keep_none);
+                    else if (keep_123 == 1)
+                        ivKeep.setImageResource(R.mipmap.i_keep_true);
+                    else
+                        ivKeep.setImageResource(R.mipmap.i_keep_123);
+
+                    tvKeepCount.setTextColor((keep_123 == 0) ? mActivity.getResources().getColor(R.color.countBack):mActivity.getResources().getColor(R.color.countFore));
+                    utils.setIntegerArrayPref("keep123", keep123);
+                    ivKeep.invalidate();
                 }
             });
 
@@ -167,7 +185,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle("몇 번? (4~30)");
+                    builder.setTitle("몇 번? (1~20)");
                     final EditText input = new EditText(mContext);
                     input.setInputType(InputType.TYPE_CLASS_NUMBER);
                     String s = ""+keepMax.get(gxIdx);
@@ -179,7 +197,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         public void onClick(DialogInterface dialog, int which) {
                             String s = input.getText().toString();
                             int i = Integer.parseInt(s);
-                            if (i >= 4 && i <= 30) {
+                            if (i >= 1 && i <= 10) {
                                 keepMax.set(gxIdx, i);
                                 utils.setIntegerArrayPref("keepMax", keepMax);
                                 tvKeepCount.setText(s);
@@ -191,43 +209,43 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
 
-            imUpDown.setOnClickListener(new View.OnClickListener() {
+            ivUpDown.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
                     boolean tf = !isUp.get(gxIdx);
                     isUp.set(gxIdx, tf);
-                    imUpDown.setImageResource((tf) ? R.mipmap.i_up_true:R.mipmap.i_up_false);
+                    ivUpDown.setImageResource((tf) ? R.mipmap.i_up_true:R.mipmap.i_up_false);
                     utils.setBooleanArrayPref("isUp", isUp);
-                    imUpDown.invalidate();
+                    ivUpDown.invalidate();
                 }
             });
 
-            imStart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    gxIdx = getAdapterPosition();
-                    boolean tf = !sayStart.get(gxIdx);
-                    sayStart.set(gxIdx, tf);
-                    imStart.setImageResource((tf) ? R.mipmap.i_start_true:R.mipmap.i_start_false);
-                    utils.setBooleanArrayPref("sayStart", sayStart);
-                    imStart.invalidate();
-                }
-            });
-
-            imReady.setOnClickListener(new View.OnClickListener() {
+            ivReady.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
                     boolean tf = !sayReady.get(gxIdx);
                     sayReady.set(gxIdx, tf);
-                    imReady.setImageResource((tf)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
+                    ivReady.setImageResource((tf)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
                     utils.setBooleanArrayPref("sayReady", sayReady);
-                    imReady.invalidate();
+                    ivReady.invalidate();
                 }
             });
 
-            imGo.setOnClickListener(new View.OnClickListener() {
+            ivStart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gxIdx = getAdapterPosition();
+                    boolean tf = !sayStart.get(gxIdx);
+                    sayStart.set(gxIdx, tf);
+                    ivStart.setImageResource((tf) ? R.mipmap.i_start_true:R.mipmap.i_start_false);
+                    utils.setBooleanArrayPref("sayStart", sayStart);
+                    ivStart.invalidate();
+                }
+            });
+
+            ivGo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
@@ -235,12 +253,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         finishHandler();
                     }
                     else {
-                        imGo.setImageResource(R.mipmap.i_go_red);
+                        ivGo.setImageResource(R.mipmap.i_go_red);
                         nowTVCount = itemView.findViewById(R.id.nowCount);
                         nowIVGo = itemView.findViewById(R.id.go);
                         nowCard = itemView.findViewById(R.id.card_view);
                         calcInterval();
-                        runGXCounter();
+                        startGXCounter();
                     }
                 }
             });
@@ -250,66 +268,90 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         int [] soundTable;
         String [] soundText;
 
-        void runGXCounter() {
+        void calcInterval() {
+            if (!cdtRunning) {
+                count = countMax.get(gxIdx);
+                display = isUp.get(gxIdx) ? 0 : countMax.get(gxIdx);
+            }
+            increase = isUp.get(gxIdx) ? 1:-1;
+            interval = speed.get(gxIdx) * 100;
+        }
+
+        void startGXCounter() {
             int color = mActivity.getResources().getColor(R.color.cardRun);
             nowCard.setCardBackgroundColor(color);
             setupSoundTable();
             sNow = 0;
-            gxCDT = new CountDownTimer(sIdx * interval, interval) {
+            cdtRunning = true;
+            int cdtDownTime = (soundText.length+2) * interval + 10;
+            runCountDownTimer(cdtDownTime);
+        }
+
+        private void runCountDownTimer(int cdtDownTime) {
+            gxCDT = new CountDownTimer(cdtDownTime, interval) {
                 public void onTick(long millisUntilFinished) {
-                    count--;
-                    display += increase;
-                    Message msg = Message.obtain();
-                    msg.obj = "< "+soundText[sNow]+ " >";
-                    displayCount.sendMessage(msg);
-                    mediaPlayer = MediaPlayer.create(mActivity, soundTable[sNow++]);
-                    mediaPlayer.start();
-//                    utils.soundPlay(soundTable[sNow++]);
-                    utils.log("CDT","interval:"+interval+ ", count "+count+ ", disp["+display+"], mili:"+millisUntilFinished);
+                    if (soundText[sNow] != null) {
+                        display += increase;
+                        Message msg = Message.obtain();
+                        msg.obj = soundText[sNow];
+                        Log.w("run" + sNow, soundText[sNow]);
+                        displayCount.sendMessage(msg);
+                        mPs[sNow] = MediaPlayer.create(mActivity, soundTable[sNow]);
+                        mPs[sNow].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            public void onCompletion(MediaPlayer mp) {
+                                mp.release();
+                                if (mPs[sNow] != null) {
+                                    mPs[sNow].reset();
+                                    mPs[sNow].release();
+                                    mPs[sNow] = null;
+                                }
+                            }
+                        });
+                      mPs[sNow].start();
+//                    utils.sayMemory();
+
+//                    utils.soundPlay(soundTable[sNow]);
+                        if (soundText[sNow].equals(sReady))
+                            SystemClock.sleep((2000));
+                        if (soundText[sNow].equals(sKeep))
+                            SystemClock.sleep((1000));
+                        sNow++;
+                        if (sNow == sIdx)
+                            finishHandler();
+                    }
                 }
                 public void onFinish() {
                     finishHandler();
                 }
             }.start();
-            cdtRunning = true;
         }
-        void calcInterval() {
-            display = isUp.get(gxIdx) ? 0:max.get(gxIdx);
-            count = max.get(gxIdx);
-            increase = isUp.get(gxIdx) ? 1:-1;
-            interval = speed.get(gxIdx) * 100;
-        }
+
         private void setupSoundTable() {
-            soundTable = new int[count+40];     // count + ready + start + keep 30
-            soundText = new String[count+40];
+            int tblSize;
+            if (keep123.get(gxIdx)== 2)
+                tblSize = count*keepMax.get(gxIdx) + 5 ;
+            else
+                tblSize = count + keepMax.get(gxIdx) + 5;
+            Log.w("tblSize","is "+tblSize);
+            soundTable = new int[tblSize];
+            soundText = new String[tblSize];
+            mPs = new MediaPlayer[tblSize];
             sIdx = 0;
-            if (sayReady.get(gxIdx)) {
-                soundTable[sIdx] = R.raw.nready;
-                soundText[sIdx] = "준비";
-                sIdx++;
-            }
-            if (sayStart.get(gxIdx)) {
-                soundTable[sIdx] = R.raw.nstart;
-                soundText[sIdx] = "시작";
-                sIdx++;
+            if (!cdtRunning) {
+                if (sayReady.get(gxIdx)) {
+                    soundTable[sIdx] = R.raw.i_ready;
+                    soundText[sIdx] = sReady;
+                    sIdx++;
+                }
+                if (sayStart.get(gxIdx)) {
+                    soundTable[sIdx] = R.raw.i_start;
+                    soundText[sIdx] = sStart;
+                    sIdx++;
+                }
             }
             if (isUp.get(gxIdx)) {
                 for (int i = 1; i <= count; i++) {
-                    int mod = i%10;
-                    if (mod == 0) {
-                        soundTable[sIdx] = R.raw.n10;
-                        soundText[sIdx] = ""+i;
-                        sIdx++;
-                    }
-                    else {
-                        soundTable[sIdx] = soundSource[mod];
-                        soundText[sIdx] = ""+i;
-                        sIdx++;
-                    }
-                }
-            }
-            else {
-                for (int i = count; i > 0; i--) {
+                    addSound123();
                     int mod = i%10;
                     if (mod == 0) {
                         int j = i / 10;
@@ -318,13 +360,28 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     else {
                         soundTable[sIdx] = soundSource[mod];
                     }
-                    soundText[sIdx] = ""+i;
+                    soundText[sIdx] = "< " + i + " >";
                     sIdx++;
                 }
             }
-            if (isKeep.get(gxIdx)) {
-                soundTable[sIdx] = R.raw.nstart;    // R.raw.nkeep;
-                soundText[sIdx] = "버티기";
+            else {
+                for (int i = count; i > 0; i--) {
+                    addSound123();
+                    int mod = i%10;
+                    if (mod == 0) {
+                        int j = i / 10;
+                        soundTable[sIdx] = sound10Source[j];
+                    }
+                    else {
+                        soundTable[sIdx] = soundSource[mod];
+                    }
+                    soundText[sIdx] = "< " + i + " >";
+                    sIdx++;
+                }
+            }
+            if (keep123.get(gxIdx) == 1) {
+                soundTable[sIdx] = R.raw.i_keep;
+                soundText[sIdx] = sKeep;
                 sIdx++;
                 for (int i = keepMax.get(gxIdx); i > 0; i--) {
                     int mod = i%10;
@@ -335,37 +392,49 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     else {
                         soundTable[sIdx] = soundSource[mod];
                     }
-                    soundText[sIdx] = ""+i;
+                    soundText[sIdx] = "> "+ i + " <";
                     sIdx++;
                 }
-
             }
-            soundTable[sIdx] = R.raw.nok;
-            soundText[sIdx] = "OK";
+            soundTable[sIdx] = R.raw.i_nomore;
+            soundText[sIdx] = sNoMore;
             sIdx++;
+            for (int i = 0; i < sIdx; i++) {
+                mPs[i] = MediaPlayer.create(mActivity, soundTable[i]);
+            }
+        }
+
+        private void addSound123() {
+            if (keep123.get(gxIdx) == 2) {
+                for (int j = 1; j < keepMax.get(gxIdx); j++) {
+                    soundTable[sIdx] = soundShort[j];
+                    soundText[sIdx] = "." + j + ".";
+                    sIdx++;
+                }
+            }
         }
     }
 
+    private static final Handler displayCount = new Handler() {
+        public void handleMessage(Message msg) {
+            nowTVCount.setText(msg.obj.toString());
+        }
+    };
+
     private static void finishHandler() {
+        SystemClock.sleep(800);
         if (gxCDT != null) {
             gxCDT.cancel();
             gxCDT = null;
         }
         cdtRunning = false;
         Message msg = Message.obtain();
-        msg.obj = ""+max.get(gxIdx);
+        msg.obj = ""+ countMax.get(gxIdx);
         displayCount.sendMessage(msg);
         nowIVGo.setImageResource(R.mipmap.i_go_green);
         int color = mActivity.getResources().getColor(R.color.cardBack);
         nowCard.setCardBackgroundColor(color);
-        mediaPlayer.release();
     }
-
-    static final Handler displayCount = new Handler() {
-        public void handleMessage(Message msg) {
-            nowTVCount.setText(msg.obj.toString());
-        }
-    };
 
     void stopHandler() {
         finishHandler();
@@ -377,13 +446,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String s;
         holder.tvTypeName.setText(typeName.get(position));
         holder.sbSpeed.setProgress(speed.get(position));
-        s = ""+max.get(position); holder.tvNowCount.setText(s);
-        holder.imUpDown.setImageResource(isUp.get(position) ? R.mipmap.i_up_true : R.mipmap.i_up_false);
-        holder.imStart.setImageResource(sayStart.get(position)? R.mipmap.i_start_true:R.mipmap.i_start_false);
-        holder.imReady.setImageResource(sayReady.get(position)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
-        holder.imKeep.setImageResource(isKeep.get(position)? R.mipmap.i_keep_true:R.mipmap.i_keep_false);
+        s = ""+ countMax.get(position); holder.tvNowCount.setText(s);
+        holder.ivUpDown.setImageResource(isUp.get(position) ? R.mipmap.i_up_true : R.mipmap.i_up_false);
+        holder.ivReady.setImageResource(sayReady.get(position)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
+        holder.ivStart.setImageResource(sayStart.get(position)? R.mipmap.i_start_true:R.mipmap.i_start_false);
+
+        if (keep123.get(position) == 0)
+            holder.ivKeep.setImageResource(R.mipmap.i_keep_none);
+        else if (keep123.get(position) == 1)
+            holder.ivKeep.setImageResource(R.mipmap.i_keep_true);
+        else
+            holder.ivKeep.setImageResource(R.mipmap.i_keep_123);
         s = ""+keepMax.get(position); holder.tvKeepCount.setText(s);
-        holder.tvKeepCount.setTextColor(isKeep.get(position)? mActivity.getResources().getColor(R.color.countFore):mActivity.getResources().getColor(R.color.countBack));
+        holder.tvKeepCount.setTextColor(keep123.get(position) != 0 ? mActivity.getResources().getColor(R.color.countFore):mActivity.getResources().getColor(R.color.countBack));
     }
 
 }

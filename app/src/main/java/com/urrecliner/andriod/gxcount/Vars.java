@@ -13,11 +13,11 @@ public class Vars {
 
     static ArrayList<String> typeName;
     static ArrayList<Integer> speed;
-    static ArrayList<Integer> max;
+    static ArrayList<Integer> countMax;
     static ArrayList<Boolean> isUp;
     static ArrayList<Boolean> sayStart;
     static ArrayList<Boolean> sayReady;
-    static ArrayList<Boolean> isKeep;
+    static ArrayList<Integer> keep123;
     static ArrayList<Integer> keepMax;
 
     static Context mContext;
@@ -31,6 +31,8 @@ public class Vars {
     static int[] soundSource = {
             0, R.raw.n01, R.raw.n02, R.raw.n03, R.raw.n04, R.raw.n05, R.raw.n06, R.raw.n07, R.raw.n08, R.raw.n09};
     static int[] sound10Source = {
-            0, R.raw.n10, R.raw.n10, R.raw.n10, R.raw.n04, R.raw.n05, R.raw.n06, R.raw.n07, R.raw.n08, R.raw.n09};
+            0, R.raw.n_10, R.raw.n_20, R.raw.n_30, R.raw.n_40, R.raw.n_50, R.raw.n_60};
+    static int[] soundShort = {
+            0, R.raw.n_s1, R.raw.n_s2, R.raw.n_s3, R.raw.n_s4, R.raw.n_s5, R.raw.n_s6, R.raw.n_s7, R.raw.n_s8, R.raw.n_s9};
 
 }

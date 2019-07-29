@@ -10,12 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import static com.urrecliner.andriod.gxcount.Vars.isKeep;
 import static com.urrecliner.andriod.gxcount.Vars.isUp;
+import static com.urrecliner.andriod.gxcount.Vars.keep123;
 import static com.urrecliner.andriod.gxcount.Vars.keepMax;
 import static com.urrecliner.andriod.gxcount.Vars.mActivity;
 import static com.urrecliner.andriod.gxcount.Vars.mContext;
-import static com.urrecliner.andriod.gxcount.Vars.max;
+import static com.urrecliner.andriod.gxcount.Vars.countMax;
 import static com.urrecliner.andriod.gxcount.Vars.recyclerView;
 import static com.urrecliner.andriod.gxcount.Vars.sayReady;
 import static com.urrecliner.andriod.gxcount.Vars.sayStart;
@@ -37,32 +37,32 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         typeName = utils.getStringArrayPref("typeName");
         speed = utils.getIntegerArrayPref("speed");
-        max = utils.getIntegerArrayPref("max");
+        countMax = utils.getIntegerArrayPref("countMax");
         isUp = utils.getBooleanArrayPref("isUp");
         sayStart = utils.getBooleanArrayPref("sayStart");
         sayReady = utils.getBooleanArrayPref("sayReady");
-        isKeep = utils.getBooleanArrayPref("isKeep");
+        keep123 = utils.getIntegerArrayPref("keep123");
         keepMax = utils.getIntegerArrayPref("keepMax");
 
         if (typeName.size() < 6) {
-            typeName.clear(); speed.clear(); max.clear(); isUp.clear(); sayStart.clear(); sayReady.clear();
+            typeName.clear(); speed.clear(); countMax.clear(); isUp.clear(); sayStart.clear(); sayReady.clear();
             for (int i = 0; i < 6; i++) {
                 typeName.add( "이름 "+(i+1));
                 speed.add(10);
-                max.add(10*(i+1));
+                countMax.add(10*(i+1));
                 isUp.add(true);
                 sayStart.add(true);
                 sayReady.add(true);
-                isKeep.add(false);
+                keep123.add(0);
                 keepMax.add(5);
             }
             utils.setStringArrayPref("typeName",typeName);
             utils.setIntegerArrayPref("speed", speed);
-            utils.setIntegerArrayPref("max",max);
+            utils.setIntegerArrayPref("countMax", countMax);
             utils.setBooleanArrayPref("isUp", isUp);
             utils.setBooleanArrayPref("sayStart", sayStart);
             utils.setBooleanArrayPref("sayReady", sayReady);
-            utils.setBooleanArrayPref("isKeep", isKeep);
+            utils.setIntegerArrayPref("isKeep", keep123);
             utils.setIntegerArrayPref("keepMax",keepMax);
         }
         recyclerView = findViewById(R.id.recyclerView);
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewAdapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
+        utils.soundInitiate();
     }
 
     @Override
