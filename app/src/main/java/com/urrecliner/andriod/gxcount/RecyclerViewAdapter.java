@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static String sStart = "<시작>";
     private static String sKeep = "<버티기>";
     private static String sNoMore = "<그만>";
-    private static MediaPlayer mPs[];
+    private static MediaPlayer[] mPs;
 
     @Override
     public int getItemCount() {
@@ -253,10 +252,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         finishHandler();
                     }
                     else {
-                        ivGo.setImageResource(R.mipmap.i_go_red);
                         nowTVCount = itemView.findViewById(R.id.nowCount);
                         nowIVGo = itemView.findViewById(R.id.go);
                         nowCard = itemView.findViewById(R.id.card_view);
+                        nowIVGo.setImageResource(R.mipmap.i_go_red);
+                        int color = mActivity.getResources().getColor(R.color.cardRun);
+                        nowCard.setCardBackgroundColor(color);
+                        nowCard.invalidate();
                         calcInterval();
                         startGXCounter();
                     }
@@ -278,8 +280,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         void startGXCounter() {
-            int color = mActivity.getResources().getColor(R.color.cardRun);
-            nowCard.setCardBackgroundColor(color);
             setupSoundTable();
             sNow = 0;
             cdtRunning = true;
@@ -288,18 +288,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         private void runCountDownTimer(int cdtDownTime) {
+            nowIVGo.setEnabled(false);
             gxCDT = new CountDownTimer(cdtDownTime, interval) {
                 public void onTick(long millisUntilFinished) {
                     if (soundText[sNow] != null) {
                         display += increase;
                         Message msg = Message.obtain();
                         msg.obj = soundText[sNow];
-                        Log.w("run" + sNow, soundText[sNow]);
                         displayCount.sendMessage(msg);
                         mPs[sNow] = MediaPlayer.create(mActivity, soundTable[sNow]);
                         mPs[sNow].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             public void onCompletion(MediaPlayer mp) {
-                                mp.release();
                                 if (mPs[sNow] != null) {
                                     mPs[sNow].reset();
                                     mPs[sNow].release();
@@ -307,13 +306,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                 }
                             }
                         });
-                      mPs[sNow].start();
-//                    utils.sayMemory();
-
-//                    utils.soundPlay(soundTable[sNow]);
+                        mPs[sNow].start();
                         if (soundText[sNow].equals(sReady))
                             SystemClock.sleep((2000));
-                        if (soundText[sNow].equals(sKeep))
+                        else if (soundText[sNow].equals(sKeep))
                             SystemClock.sleep((1000));
                         sNow++;
                         if (sNow == sIdx)
@@ -324,6 +320,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     finishHandler();
                 }
             }.start();
+            nowIVGo.setEnabled(true);
         }
 
         private void setupSoundTable() {
@@ -332,7 +329,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 tblSize = count*keepMax.get(gxIdx) + 5 ;
             else
                 tblSize = count + keepMax.get(gxIdx) + 5;
-            Log.w("tblSize","is "+tblSize);
             soundTable = new int[tblSize];
             soundText = new String[tblSize];
             mPs = new MediaPlayer[tblSize];
