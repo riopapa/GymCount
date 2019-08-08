@@ -26,6 +26,7 @@ import static com.urrecliner.andriod.gxcount.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static String logId = "main";
     RecyclerViewAdapter recyclerViewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewAdapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
-        utils.soundInitiate();
+//        utils.soundInitiate();
+        utils.log(logId,"Ready");
     }
 
     @Override
