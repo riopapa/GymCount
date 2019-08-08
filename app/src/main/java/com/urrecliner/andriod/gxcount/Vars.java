@@ -1,5 +1,6 @@
 package com.urrecliner.andriod.gxcount;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class Vars {
+class Vars {
     static SharedPreferences sharedPreferences;
 
     static ArrayList<String> typeName;
@@ -20,8 +21,11 @@ public class Vars {
     static ArrayList<Integer> keep123;
     static ArrayList<Integer> keepMax;
 
+    @SuppressLint("StaticFieldLeak")
     static Context mContext;
+    @SuppressLint("StaticFieldLeak")
     static Activity mActivity;
+    @SuppressLint("StaticFieldLeak")
     static RecyclerView recyclerView;
     static Utils utils;
     static int gxIdx;
