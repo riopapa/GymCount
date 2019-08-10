@@ -16,8 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import static com.urrecliner.andriod.gxcount.Vars.cdtRunning;
 import static com.urrecliner.andriod.gxcount.Vars.countMax;
@@ -37,7 +41,8 @@ import static com.urrecliner.andriod.gxcount.Vars.speed;
 import static com.urrecliner.andriod.gxcount.Vars.typeName;
 import static com.urrecliner.andriod.gxcount.Vars.utils;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements NumberPicker.OnValueChangeListener {
+
 
     private static TextView nowTVCount;
     private static ImageView nowIVGo;
@@ -58,6 +63,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.one_timer, parent, false);
         return new ViewHolder(view);
+    }
+
+    static TextView currTVKeep, currTVCount;
+    @Override
+    public void onValueChange(NumberPicker picker, int type, int newVal) {
+        String s;
+        int val = picker.getValue();
+        utils.log("onValueChange","val"+val+", newVal"+newVal);
+        switch (type) {
+            case 1:
+                keepMax.set(gxIdx, newVal);
+                utils.setIntegerArrayPref("keepMax", keepMax);
+                s = ""+newVal;
+                currTVKeep.setText(s);
+                currTVKeep.invalidate();
+                break;
+
+            case 5:
+                countMax.set(gxIdx, newVal);
+                utils.setIntegerArrayPref("countMax", countMax);
+                s = ""+newVal;
+                currTVCount.setText(s);
+                currTVCount.invalidate();
+                break;
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -133,29 +163,55 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle("몇 번? (4~60)");
-                    final EditText input = new EditText(mContext);
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    String s = ""+ countMax.get(gxIdx);
-                    input.setText(s);
-                    input.setTextSize(32);
-                    builder.setView(input);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    currTVCount = tvNowCount;
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                    LayoutInflater inflater = mActivity.getLayoutInflater();
+                    View theView = inflater.inflate(R.layout.get_number, null);
+                    final TextView tv = theView.findViewById(R.id.title);
+                    tv.setText(typeName.get(gxIdx));
+                    final NumberPicker np = theView.findViewById(R.id.getNumber);
+                    String[] myValues = getCountMaxTable();
+
+                    np.setMinValue(0);
+                    np.setMaxValue(myValues.length - 1);
+                    np.setDisplayedValues(myValues);
+                    int val = countMax.get(gxIdx);
+                    np.setValue((val > 20) ? 20 + (val - 20) / 5 : val);    // index pointer
+                    np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); //키보드 입력을 방지
+                    builder.setView(theView)
+                            .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    int val = np.getValue();
+                                    if (val > 20)
+                                        val = 20 + (val - 20) * 5;
+                                    String s;
+                                    countMax.set(gxIdx, val);
+                                    utils.setIntegerArrayPref("countMax", countMax);
+                                    s = ""+val;
+                                    currTVCount.setText(s);
+                                    currTVCount.invalidate();
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String s = input.getText().toString();
-                            int i = Integer.parseInt(s);
-                            if (i >= 4 && i <= 70) {
-                                countMax.set(gxIdx, i);
-                                utils.setIntegerArrayPref("countMax", countMax);
-                                tvNowCount.setText(s);
-                                tvNowCount.invalidate();
-                            }
                         }
                     });
                     builder.show();
                 }
+
+                String[] getCountMaxTable() {
+
+                    String[] result = null;
+                        result = new String[29];
+                        for (int i = 0; i < 20; i++)
+                            result[i] = ""+(i);
+                        for (int i = 0; i < 9 ; i++)
+                            result[20+i] = ""+(20 + i * 5);
+                    return result;
+                }
+
             });
 
             ivKeep.setOnClickListener(new View.OnClickListener() {
@@ -183,29 +239,51 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle("몇 번? (1~20)");
-                    final EditText input = new EditText(mContext);
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    String s = ""+keepMax.get(gxIdx);
-                    input.setText(s);
-                    input.setTextSize(32);
-                    builder.setView(input);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    currTVKeep = tvKeepCount;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                    LayoutInflater inflater = mActivity.getLayoutInflater();
+                    View theView = inflater.inflate(R.layout.get_number, null);
+
+                    final TextView tv = theView.findViewById(R.id.title);
+                    tv.setText(typeName.get(gxIdx));
+                    final NumberPicker np = theView.findViewById(R.id.getNumber);
+                    String[] myValues = getKeepMaxTable();
+
+                    np.setMinValue(0);
+                    np.setMaxValue(myValues.length - 1);
+                    np.setDisplayedValues(myValues);
+                    int val = keepMax.get(gxIdx);
+                    np.setValue(val);    // index pointer
+                    np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+                    builder.setView(theView)
+                            .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    int val = np.getValue();
+                                    String s;
+                                    keepMax.set(gxIdx, val);
+                                    utils.setIntegerArrayPref("keepMax", keepMax);
+                                    s = ""+val;
+                                    tvKeepCount.setText(s);
+                                    tvKeepCount.invalidate();
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String s = input.getText().toString();
-                            int i = Integer.parseInt(s);
-                            if (i >= 1 && i <= 10) {
-                                keepMax.set(gxIdx, i);
-                                utils.setIntegerArrayPref("keepMax", keepMax);
-                                tvKeepCount.setText(s);
-                                tvKeepCount.invalidate();
-                            }
                         }
                     });
                     builder.show();
                 }
+
+                String[] getKeepMaxTable() {
+
+                    String[] result = null;
+                    result = new String[21];
+                    for (int i = 0; i < 21; i++)
+                        result[i] = ""+(i);
+                    return result;
+                }
+
             });
 
             ivUpDown.setOnClickListener(new View.OnClickListener() {
@@ -255,16 +333,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         nowTVCount = itemView.findViewById(R.id.nowCount);
                         nowIVGo = itemView.findViewById(R.id.go);
                         nowCard = itemView.findViewById(R.id.card_view);
-                        nowIVGo.setImageResource(R.mipmap.i_go_red);
+//                        nowIVGo.setImageResource(R.mipmap.i_go_red);
+                        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(nowIVGo);
+                        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
+
                         int color = mActivity.getResources().getColor(R.color.cardRun);
                         nowCard.setCardBackgroundColor(color);
                         nowCard.invalidate();
                         calcInterval();
-                        startGXCounter();
+                        setupSoundTable();
+                        sNow = 0;
+                        cdtRunning = true;
+                        int cdtDownTime = (soundText.length+2) * interval + 10;
+                        runCountDownTimer(cdtDownTime);
                     }
                 }
             });
+
         }
+
 
         int count, display, increase, interval, sIdx, sNow;
         int [] soundTable;
@@ -277,14 +364,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
             increase = isUp.get(gxIdx) ? 1:-1;
             interval = speed.get(gxIdx) * 100;
-        }
-
-        void startGXCounter() {
-            setupSoundTable();
-            sNow = 0;
-            cdtRunning = true;
-            int cdtDownTime = (soundText.length+2) * interval + 10;
-            runCountDownTimer(cdtDownTime);
         }
 
         private void runCountDownTimer(int cdtDownTime) {
@@ -409,6 +488,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             }
         }
+
     }
 
     private static final Handler displayCount = new Handler() {

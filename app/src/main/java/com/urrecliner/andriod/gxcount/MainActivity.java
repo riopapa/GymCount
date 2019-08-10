@@ -10,12 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import static com.urrecliner.andriod.gxcount.Vars.countMax;
 import static com.urrecliner.andriod.gxcount.Vars.isUp;
 import static com.urrecliner.andriod.gxcount.Vars.keep123;
 import static com.urrecliner.andriod.gxcount.Vars.keepMax;
 import static com.urrecliner.andriod.gxcount.Vars.mActivity;
 import static com.urrecliner.andriod.gxcount.Vars.mContext;
-import static com.urrecliner.andriod.gxcount.Vars.countMax;
 import static com.urrecliner.andriod.gxcount.Vars.recyclerView;
 import static com.urrecliner.andriod.gxcount.Vars.sayReady;
 import static com.urrecliner.andriod.gxcount.Vars.sayStart;
@@ -45,25 +45,61 @@ public class MainActivity extends AppCompatActivity {
         keep123 = utils.getIntegerArrayPref("keep123");
         keepMax = utils.getIntegerArrayPref("keepMax");
 
-        if (typeName.size() < 6) {
-            typeName.clear(); speed.clear(); countMax.clear(); isUp.clear(); sayStart.clear(); sayReady.clear();
-            for (int i = 0; i < 6; i++) {
-                typeName.add( "이름 "+(i+1));
+        int cardCount = 6;
+        if (typeName.size() != cardCount) {
+            typeName.clear();
+            for (int i = 0; i < cardCount; i++) {
+                typeName.add("이름 " + (i + 1));
+            }
+            utils.setStringArrayPref("typeName", typeName);
+        }
+        if (speed.size() != cardCount) {
+            speed.clear();
+            for (int i = 0; i < cardCount; i++) {
                 speed.add(10);
+            }
+            utils.setIntegerArrayPref("speed", speed);
+        }
+        if (countMax.size() != cardCount) {
+            countMax.clear();
+            for (int i = 0; i < cardCount; i++) {
                 countMax.add(10*(i+1));
+            }
+            utils.setIntegerArrayPref("countMax", countMax);
+        }
+        if (isUp.size() != cardCount) {
+            isUp.clear();
+            for (int i = 0; i < cardCount; i++) {
                 isUp.add(true);
+            }
+            utils.setBooleanArrayPref("isUp", isUp);
+        }
+        if (sayStart.size() != cardCount) {
+            sayStart.clear();
+            for (int i = 0; i < cardCount; i++) {
                 sayStart.add(true);
+            }
+            utils.setBooleanArrayPref("sayStart", sayStart);
+        }
+        if (sayReady.size() != cardCount) {
+            sayReady.clear();
+            for (int i = 0; i < cardCount; i++) {
                 sayReady.add(true);
-                keep123.add(0);
+            }
+            utils.setBooleanArrayPref("sayReady", sayReady);
+        }
+        if (keep123.size() != cardCount) {
+            keep123.clear();
+            for (int i = 0; i < cardCount; i++) {
+                keep123.add(1);
+            }
+            utils.setBooleanArrayPref("sayReady", sayReady);
+        }
+        if (keepMax.size() != cardCount) {
+            keepMax.clear();
+            for (int i = 0; i < cardCount; i++) {
                 keepMax.add(5);
             }
-            utils.setStringArrayPref("typeName",typeName);
-            utils.setIntegerArrayPref("speed", speed);
-            utils.setIntegerArrayPref("countMax", countMax);
-            utils.setBooleanArrayPref("isUp", isUp);
-            utils.setBooleanArrayPref("sayStart", sayStart);
-            utils.setBooleanArrayPref("sayReady", sayReady);
-            utils.setIntegerArrayPref("isKeep", keep123);
             utils.setIntegerArrayPref("keepMax",keepMax);
         }
         recyclerView = findViewById(R.id.recyclerView);
