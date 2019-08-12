@@ -318,7 +318,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 List <String> getKeepMaxTable() {
 
                     List<String> result = new ArrayList<>();
-                    for (int i = 0; i < 20; i++) result.add("" + i);
+                    for (int i = 0; i < 21; i++) result.add("" + i);
                     return result;
                 }
 
