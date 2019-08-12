@@ -1,6 +1,7 @@
 package com.urrecliner.andriod.gxcount;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.urrecliner.andriod.gxcount.Vars.cdtRunning;
 import static com.urrecliner.andriod.gxcount.Vars.countMax;
@@ -97,6 +102,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         SeekBar sbSpeed;
         ImageView ivUpDown, ivKeep, ivStart, ivReady, ivGo;
         TextView tvKeepCount;
+        int wheelResult = 0;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -168,22 +174,44 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     LayoutInflater inflater = mActivity.getLayoutInflater();
                     View theView = inflater.inflate(R.layout.get_number, null);
-                    final TextView tv = theView.findViewById(R.id.title);
-                    tv.setText(typeName.get(gxIdx));
-                    final NumberPicker np = theView.findViewById(R.id.getNumber);
-                    String[] myValues = getCountMaxTable();
+                    final TextView tvt = theView.findViewById(R.id.title);
+                    tvt.setText(typeName.get(gxIdx));
+                    final TextView tvs = theView.findViewById(R.id.subtitle);
+                    tvs.setText("오르내리기 횟수 설정");
+//                    final NumberPicker np = theView.findViewById(R.id.getNumber);
+//                    [] myValues = getCountMaxTable();
+//
+//                    np.setMinValue(0);
+//                    np.setMaxValue(myValues.length - 1);
+//                    np.setDisplayedValues(myValues);
+//                    np.setValue((val > 20) ? 20 + (val - 20) / 5 : val);    // index pointer
+//                    np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); //키보드 입력을 방지
 
-                    np.setMinValue(0);
-                    np.setMaxValue(myValues.length - 1);
-                    np.setDisplayedValues(myValues);
+                    final List<String> wheelValues = getCountMaxTable();
+                    WheelView wV = theView.findViewById(R.id.wheel);
+                    if (wV == null)
+                        Log.e("wV"," is null");
+                    wV.setItems(wheelValues);
+                    wV.setAdditionCenterMark("회");
+                    wV.setBackgroundColor(Color.CYAN);
                     int val = countMax.get(gxIdx);
-                    np.setValue((val > 20) ? 20 + (val - 20) / 5 : val);    // index pointer
-                    np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); //키보드 입력을 방지
+                    wV.selectIndex((val > 20) ? 20 + (val - 20) / 5 : val);    // index pointer
+                    wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
+                        @Override
+                        public void onWheelItemSelected(WheelView wheelView, int position) {
+                            wheelResult = position;
+                        }
+                        @Override
+                        public void onWheelItemChanged(WheelView wheelView, int position) {
+                        }
+                    });
+
                     builder.setView(theView)
                             .setPositiveButton("OK",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    int val = np.getValue();
+//                                    int val = np.getValue();
+                                    int val = wheelResult;
                                     if (val > 20)
                                         val = 20 + (val - 20) * 5;
                                     String s;
@@ -198,20 +226,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     });
+//                    utils.ttsSpeak(typeName.get(gxIdx)+" 입니다. 오르내리기 회수를 설정합니다");
                     builder.show();
                 }
 
-                String[] getCountMaxTable() {
+                List <String> getCountMaxTable() {
 
-                    String[] result = null;
-                        result = new String[29];
-                        for (int i = 0; i < 20; i++)
-                            result[i] = ""+(i);
-                        for (int i = 0; i < 9 ; i++)
-                            result[20+i] = ""+(20 + i * 5);
+                    List<String> result = new ArrayList<>();
+                        for (int i = 0; i < 20; i++) result.add("" + i);
+                        for (int i = 0; i < 9 ; i++) result.add(""+(20 + i * 5));
                     return result;
                 }
-
             });
 
             ivKeep.setOnClickListener(new View.OnClickListener() {
@@ -246,20 +271,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                     final TextView tv = theView.findViewById(R.id.title);
                     tv.setText(typeName.get(gxIdx));
-                    final NumberPicker np = theView.findViewById(R.id.getNumber);
-                    String[] myValues = getKeepMaxTable();
+                    final TextView tvs = theView.findViewById(R.id.subtitle);
+                    String s = "버티기/반복 횟수 설정";
+                    tvs.setText(s);
 
-                    np.setMinValue(0);
-                    np.setMaxValue(myValues.length - 1);
-                    np.setDisplayedValues(myValues);
+                    final List<String> wheelValues = getKeepMaxTable();
+                    WheelView wV = theView.findViewById(R.id.wheel);
+                    if (wV == null)
+                        Log.e("wV"," is null");
+                    wV.setItems(wheelValues);
+                    wV.setAdditionCenterMark("회");
+                    wV.setBackgroundColor(Color.CYAN);
                     int val = keepMax.get(gxIdx);
-                    np.setValue(val);    // index pointer
-                    np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+                    wV.selectIndex(val);
+                    wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
+                        @Override
+                        public void onWheelItemSelected(WheelView wheelView, int position) {
+                            wheelResult = position;
+                        }
+                        @Override
+                        public void onWheelItemChanged(WheelView wheelView, int position) {
+                        }
+                    });
+
                     builder.setView(theView)
                             .setPositiveButton("OK",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    int val = np.getValue();
+                                    int val = wheelResult;
                                     String s;
                                     keepMax.set(gxIdx, val);
                                     utils.setIntegerArrayPref("keepMax", keepMax);
@@ -272,15 +311,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     });
+//                    utils.ttsSpeak(typeName.get(gxIdx)+" 입니다. 버티기 또는 반복 회수를 설정합니다");
                     builder.show();
                 }
 
-                String[] getKeepMaxTable() {
+                List <String> getKeepMaxTable() {
 
-                    String[] result = null;
-                    result = new String[21];
-                    for (int i = 0; i < 21; i++)
-                        result[i] = ""+(i);
+                    List<String> result = new ArrayList<>();
+                    for (int i = 0; i < 20; i++) result.add("" + i);
                     return result;
                 }
 
@@ -488,7 +526,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             }
         }
-
     }
 
     private static final Handler displayCount = new Handler() {
@@ -538,3 +575,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 }
+//                    final NumberPicker np = theView.findViewById(R.id.getNumber);
+//                    String[] myValues = getKeepMaxTable();
+//
+//                    np.setMinValue(0);
+//                    np.setMaxValue(myValues.length - 1);
+//                    np.setDisplayedValues(myValues);
+//                    int val = keepMax.get(gxIdx);
+//                    np.setValue(val);    // index pointer
+//                    np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);

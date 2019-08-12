@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:background="@color/cardBack"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
@@ -16,14 +16,31 @@
         android:layout_gravity="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/countFore"/>
+        android:textColor="@color/cardRun"/>
 
-    <NumberPicker
-        android:id="@+id/getNumber"
-        android:theme="@style/numberPickerCustomSize"
-        android:layout_margin="4dp"
-        android:layout_gravity="center"
+    <TextView
+        android:id="@+id/subtitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:padding="2dp"
+        android:background="@drawable/backborder"
+        android:text=""
+        android:layout_gravity="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/cardRun"/>
+
+    <com.urrecliner.andriod.gxcount.WheelView
+        android:id="@+id/wheel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
+<!--<NumberPicker-->
+<!--android:id="@+id/getNumber"-->
+<!--android:theme="@style/numberPickerCustomSize"-->
+<!--android:layout_margin="4dp"-->
+<!--android:layout_gravity="center"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"/>-->

@@ -1,13 +1,20 @@
 package com.urrecliner.andriod.gxcount;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
+import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
+import static com.urrecliner.andriod.gxcount.Vars.mContext;
 import static com.urrecliner.andriod.gxcount.Vars.sharedPreferences;
 
 class Utils {
@@ -112,42 +119,59 @@ class Utils {
         return urls;
     }
 
-//    private SoundPool soundPool = null;
-//    private SoundPool savedPool;
-//
-//    void soundInitiate() {
-//
-//        SoundPool.Builder builder;
-//        AudioAttributes audioAttrib = new AudioAttributes.Builder()
-//                .setUsage(AudioAttributes.USAGE_MEDIA)
-//                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-//                .build();
-//        builder = new SoundPool.Builder();
-//        builder.setAudioAttributes(audioAttrib).setMaxStreams(5);
-//        savedPool = builder.build();
-//    }
+    AudioManager mAudioManager = null;
+    AudioFocusRequest mFocusGain = null;
+    TextToSpeech mTTS;
 
-//    void soundPlay(int soundId) {
-//        soundPool = savedPool;
-//        final int soundNbr = soundPool.load(mContext, soundId, 1);
-//        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-//            @Override
-//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-//                soundPool.play(soundNbr, 1f, 1f, 0, 0, 1f);
-//                soundPool.release();
-//            }
-//
-//        });
-//    }
-//
-//    void sayMemory() {
-//        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
-//        ActivityManager activityManager = (ActivityManager) mActivity.getSystemService(ACTIVITY_SERVICE);
-//        activityManager.getMemoryInfo(mi);
-//        double availableMegs = mi.availMem / 0x100000L;
-//
-////Percentage can be calculated for API 16+
-//        double percentAvail = mi.availMem / (double)mi.totalMem * 100.0;
-//        Log.w("Mem","avail:"+availableMegs+" per:"+percentAvail);
-//    }
+    void ttsSpeak(String text) {
+        Log.w("TTS","ttsspeak");
+        initiateTTS();
+        final String t = text;
+        new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                Log.w("TTS1","ttsspeak");
+                try {
+                    readyAudioManager();
+                    mTTS.setPitch(1.4f);
+                    mTTS.setSpeechRate(1.4f);
+                    try {
+                        Log.w("TTS6","ttsspeak");
+                        mTTS.speak(t, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+                    } catch (Exception e) {
+                        log("speak", "justSpeak:" + e.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 1000);
+    }
+
+    void initiateTTS() {
+        mTTS = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = mTTS.setLanguage(Locale.KOREA);
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        log("inittTS", "Language not supported");
+                    }
+                }
+            }
+        });
+    }
+
+    void readyAudioManager() {
+        if(mAudioManager == null) {
+            try {
+                mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                mFocusGain = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                        .build();
+            } catch (Exception e) {
+                log("err", "mAudioManager Error " + e.toString());
+            }
+        }
+    }
 }
