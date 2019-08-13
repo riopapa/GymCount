@@ -13,6 +13,8 @@
     <color name="countBack">@color/Chartreuse</color>
     <color name="countFore">@color/Navy</color>
 
+    <color name="wheelBack">@color/GreenOnion</color>
+
     // Red Colors
     <color name="LightSalmon">#FFA07A</color>
     <color name="Salmon">#FA8072</color>

@@ -8,10 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="numberPickerCustomSize">
+    <style name="wheelButton">
         <item name="android:textSize">24sp</item>
+        <item name="android:height">72dp</item>
         <item name="android:textColor">@color/cardBack</item>
         <item name="android:background">@color/cardRun</item>
-        <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
+
 </resources>
