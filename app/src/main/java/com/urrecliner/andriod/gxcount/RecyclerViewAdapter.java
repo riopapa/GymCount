@@ -39,9 +39,10 @@ import static com.urrecliner.andriod.gxcount.Vars.mActivity;
 import static com.urrecliner.andriod.gxcount.Vars.mContext;
 import static com.urrecliner.andriod.gxcount.Vars.sayReady;
 import static com.urrecliner.andriod.gxcount.Vars.sayStart;
-import static com.urrecliner.andriod.gxcount.Vars.sound10Source;
-import static com.urrecliner.andriod.gxcount.Vars.soundShort;
-import static com.urrecliner.andriod.gxcount.Vars.soundSource;
+import static com.urrecliner.andriod.gxcount.Vars.sndTenTbl;
+import static com.urrecliner.andriod.gxcount.Vars.sndShortTbl;
+import static com.urrecliner.andriod.gxcount.Vars.sndTbl;
+import static com.urrecliner.andriod.gxcount.Vars.sndSpecialTbl;
 import static com.urrecliner.andriod.gxcount.Vars.speed;
 import static com.urrecliner.andriod.gxcount.Vars.typeName;
 import static com.urrecliner.andriod.gxcount.Vars.utils;
@@ -57,7 +58,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static String sStart = "<시작>";
     private static String sKeep = "<버티기>";
     private static String sNoMore = "<그만>";
-    private static MediaPlayer[] mPs;
 
     @Override
     public int getItemCount() {
@@ -413,17 +413,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         Message msg = Message.obtain();
                         msg.obj = soundText[sNow];
                         displayCount.sendMessage(msg);
-                        mPs[sNow] = MediaPlayer.create(mActivity, soundTable[sNow]);
-                        mPs[sNow].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                            public void onCompletion(MediaPlayer mp) {
-                                if (mPs[sNow] != null) {
-                                    mPs[sNow].reset();
-                                    mPs[sNow].release();
-                                    mPs[sNow] = null;
-                                }
-                            }
-                        });
-                        mPs[sNow].start();
+                        utils.beepSound(soundTable[sNow], 1f);
                         if (soundText[sNow].equals(sReady))
                             SystemClock.sleep((2000));
                         else if (soundText[sNow].equals(sKeep))
@@ -448,16 +438,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 tblSize = count + keepMax.get(gxIdx) + 5;
             soundTable = new int[tblSize];
             soundText = new String[tblSize];
-            mPs = new MediaPlayer[tblSize];
             sIdx = 0;
             if (!cdtRunning) {
                 if (sayReady.get(gxIdx)) {
-                    soundTable[sIdx] = R.raw.i_ready;
+                    soundTable[sIdx] = sndSpecialTbl[3];   // R.raw.i_ready
                     soundText[sIdx] = sReady;
                     sIdx++;
                 }
                 if (sayStart.get(gxIdx)) {
-                    soundTable[sIdx] = R.raw.i_start;
+                    soundTable[sIdx] = sndSpecialTbl[2];   // R.raw.i_start
                     soundText[sIdx] = sStart;
                     sIdx++;
                 }
@@ -468,10 +457,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     int mod = i%10;
                     if (mod == 0) {
                         int j = i / 10;
-                        soundTable[sIdx] = sound10Source[j];
+                        soundTable[sIdx] = sndTenTbl[j];
                     }
                     else {
-                        soundTable[sIdx] = soundSource[mod];
+                        soundTable[sIdx] = sndTbl[mod];
                     }
                     soundText[sIdx] = "< " + i + " >";
                     sIdx++;
@@ -483,45 +472,49 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     int mod = i%10;
                     if (mod == 0) {
                         int j = i / 10;
-                        soundTable[sIdx] = sound10Source[j];
+                        soundTable[sIdx] = sndTenTbl[j];
                     }
                     else {
-                        soundTable[sIdx] = soundSource[mod];
+                        soundTable[sIdx] = sndTbl[mod];
                     }
                     soundText[sIdx] = "< " + i + " >";
                     sIdx++;
                 }
             }
             if (keep123.get(gxIdx) == 1) {
-                soundTable[sIdx] = R.raw.i_keep;
+                soundTable[sIdx] = sndSpecialTbl[0]; //R.raw.i_keep;
                 soundText[sIdx] = sKeep;
                 sIdx++;
                 for (int i = keepMax.get(gxIdx); i > 0; i--) {
                     int mod = i%10;
                     if (mod == 0) {
                         int j = i / 10;
-                        soundTable[sIdx] = sound10Source[j];
+                        soundTable[sIdx] = sndTenTbl[j];
                     }
                     else {
-                        soundTable[sIdx] = soundSource[mod];
+                        soundTable[sIdx] = sndTbl[mod];
                     }
                     soundText[sIdx] = "> "+ i + " <";
                     sIdx++;
                 }
             }
-            soundTable[sIdx] = R.raw.i_nomore;
+            soundTable[sIdx] = sndSpecialTbl[1]; // R.raw.i_nomore;
             soundText[sIdx] = sNoMore;
             sIdx++;
-            for (int i = 0; i < sIdx; i++) {
-                mPs[i] = MediaPlayer.create(mActivity, soundTable[i]);
-            }
         }
 
         private void addSound123() {
             if (keep123.get(gxIdx) == 2) {
-                for (int j = 1; j < keepMax.get(gxIdx); j++) {
-                    soundTable[sIdx] = soundShort[j];
-                    soundText[sIdx] = "." + j + ".";
+                for (int i = 1; i < keepMax.get(gxIdx); i++) {
+                    int mod = i%10;
+                    if (mod == 0) {
+                        int j = i / 10;
+                        soundTable[sIdx] = sndTenTbl[j];
+                    }
+                    else {
+                        soundTable[sIdx] = sndShortTbl[mod];
+                    }
+                    soundText[sIdx] = "." + i + ".";
                     sIdx++;
                 }
             }

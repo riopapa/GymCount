@@ -34,9 +34,13 @@ class Vars {
 
     static int[] soundSource = {
             0, R.raw.n01, R.raw.n02, R.raw.n03, R.raw.n04, R.raw.n05, R.raw.n06, R.raw.n07, R.raw.n08, R.raw.n09};
-    static int[] sound10Source = {
+    static int[] soundTenSource = {
             0, R.raw.n_10, R.raw.n_20, R.raw.n_30, R.raw.n_40, R.raw.n_50, R.raw.n_60};
     static int[] soundShort = {
             0, R.raw.n_s1, R.raw.n_s2, R.raw.n_s3, R.raw.n_s4, R.raw.n_s5, R.raw.n_s6, R.raw.n_s7, R.raw.n_s8, R.raw.n_s9};
+                                    // 0            1               2           3               4
+    static int[] soundSpecial = { R.raw.i_keep, R.raw.i_nomore, R.raw.i_start, R.raw.i_ready, R.raw.i_last};
+
+    static int[] sndTbl, sndTenTbl, sndShortTbl, sndSpecialTbl;
 
 }

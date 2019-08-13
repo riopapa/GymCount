@@ -32,9 +32,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        utils = new Utils();
         mContext = this;
         mActivity = this;
+        utils = new Utils();
+        utils.soundInitiate();
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         typeName = utils.getStringArrayPref("typeName");
         speed = utils.getIntegerArrayPref("speed");
