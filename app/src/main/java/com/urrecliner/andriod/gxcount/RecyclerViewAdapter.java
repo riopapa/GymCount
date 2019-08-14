@@ -1,7 +1,6 @@
 package com.urrecliner.andriod.gxcount;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -39,10 +38,10 @@ import static com.urrecliner.andriod.gxcount.Vars.mActivity;
 import static com.urrecliner.andriod.gxcount.Vars.mContext;
 import static com.urrecliner.andriod.gxcount.Vars.sayReady;
 import static com.urrecliner.andriod.gxcount.Vars.sayStart;
-import static com.urrecliner.andriod.gxcount.Vars.sndTenTbl;
 import static com.urrecliner.andriod.gxcount.Vars.sndShortTbl;
-import static com.urrecliner.andriod.gxcount.Vars.sndTbl;
 import static com.urrecliner.andriod.gxcount.Vars.sndSpecialTbl;
+import static com.urrecliner.andriod.gxcount.Vars.sndTbl;
+import static com.urrecliner.andriod.gxcount.Vars.sndTenTbl;
 import static com.urrecliner.andriod.gxcount.Vars.speed;
 import static com.urrecliner.andriod.gxcount.Vars.typeName;
 import static com.urrecliner.andriod.gxcount.Vars.utils;
@@ -178,22 +177,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     tvt.setText(typeName.get(gxIdx));
                     final TextView tvs = theView.findViewById(R.id.subtitle);
                     tvs.setText("오르내리기 횟수 설정");
-//                    final NumberPicker np = theView.findViewById(R.id.getNumber);
-//                    [] myValues = getCountMaxTable();
-//
-//                    np.setMinValue(0);
-//                    np.setMaxValue(myValues.length - 1);
-//                    np.setDisplayedValues(myValues);
-//                    np.setValue((val > 20) ? 20 + (val - 20) / 5 : val);    // index pointer
-//                    np.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); //키보드 입력을 방지
 
                     final List<String> wheelValues = getCountMaxTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
-                    if (wV == null)
-                        Log.e("wV"," is null");
                     wV.setItems(wheelValues);
-                    wV.setAdditionCenterMark("회");
-                    wV.setBackgroundColor(Color.CYAN);
                     int val = countMax.get(gxIdx);
                     wV.selectIndex((val > 20) ? 20 + (val - 20) / 5 : val);    // index pointer
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
@@ -207,7 +194,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     });
 
                     builder.setView(theView)
-                            .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                            .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 //                                    int val = np.getValue();
@@ -280,8 +267,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (wV == null)
                         Log.e("wV"," is null");
                     wV.setItems(wheelValues);
-                    wV.setAdditionCenterMark("회");
-                    wV.setBackgroundColor(Color.CYAN);
                     int val = keepMax.get(gxIdx);
                     wV.selectIndex(val);
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {

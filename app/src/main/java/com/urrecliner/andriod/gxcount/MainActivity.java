@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewAdapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
-//        utils.soundInitiate();
         utils.log(logId,"Ready");
     }
 

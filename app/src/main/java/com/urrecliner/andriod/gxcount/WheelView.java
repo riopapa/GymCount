@@ -14,7 +14,6 @@ import android.support.v4.view.ViewCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -92,7 +91,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 		mMarkColor = 0xFFEEEEEE;
 		mCursorSize = density * 18;
 		mCenterTextSize = density * 32; // 22;
-		mNormalTextSize = density * 28; // 18;
+		mNormalTextSize = density * 24; // 18;
 		mBottomSpace = density * 6;
 
 		TypedArray ta = attrs == null ? null : getContext().obtainStyledAttributes(attrs, R.styleable.lwvWheelView);
@@ -108,19 +107,18 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 			mCursorSize = ta.getDimension(R.styleable.lwvWheelView_lwvCursorSize, mCursorSize);
 		}
 		mFadeMarkColor = mHighlightColor & 0xAAFFFFFF;
-		Log.w("fademark",""+mFadeMarkColor);
+//		Log.w("mFadeMarkColor", String.format("#%06X", (0xFFFFFF & mFadeMarkColor)));
 		mIntervalFactor = Math.max(1, mIntervalFactor);
 		mMarkRatio = Math.min(1, mMarkRatio);
 		mTopSpace = mCursorSize + density * 2;
 
 		mMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mMarkTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-		mMarkTextPaint.setTextAlign(Paint.Align.CENTER);
-		mMarkTextPaint.setColor(mHighlightColor);
-
 		mMarkPaint.setColor(mMarkColor);
 		mMarkPaint.setStrokeWidth(mCenterMarkWidth);
 
+		mMarkTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+		mMarkTextPaint.setTextAlign(Paint.Align.CENTER);
+		mMarkTextPaint.setColor(mHighlightColor);
 		mMarkTextPaint.setTextSize(mCenterTextSize);
 		calcIntervalDis();
 
@@ -227,7 +225,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 
 		mCenterIndicatorPath.reset();
 		float sizeDiv2 = mCursorSize / 2f;
-		float sizeDiv3 = mCursorSize / 4f;  // 3f;
+		float sizeDiv3 = mCursorSize / 3f;  // 3f;
 		mCenterIndicatorPath.moveTo(mMaxOverScrollDistance - sizeDiv2 + getScrollX(), 0);
 		mCenterIndicatorPath.rLineTo(0, sizeDiv3);
 		mCenterIndicatorPath.rLineTo(sizeDiv2, sizeDiv2);
