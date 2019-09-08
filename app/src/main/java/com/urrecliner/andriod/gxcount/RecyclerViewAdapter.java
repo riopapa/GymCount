@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -50,7 +51,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     private static TextView nowTVCount;
-    private static ImageView nowIVGo;
+    private static ImageView nowIVGo, nowIVStop;
     private static CardView nowCard;
     private static MediaPlayer mediaPlayer;
     private static String sReady = "<준비>";
@@ -99,7 +100,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView tvTypeName;
         TextView tvNowCount;
         SeekBar sbSpeed;
-        ImageView ivUpDown, ivKeep, ivStart, ivReady, ivGo;
+        ImageView ivUpDown, ivKeep, ivStart, ivReady, ivGo, ivStop;
         TextView tvKeepCount;
         int wheelResult = 0;
 
@@ -115,6 +116,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivStart = itemView.findViewById(R.id.start);
             ivReady = itemView.findViewById(R.id.ready);
             ivGo = itemView.findViewById(R.id.go);
+            ivStop = itemView.findViewById(R.id.stop);
 
             tvTypeName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -157,11 +159,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     }
                 }
                 @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
+                public void onStartTrackingTouch(SeekBar seekBar) { }
                 @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
+                public void onStopTrackingTouch(SeekBar seekBar) { }
             });
 
             tvNowCount.setOnClickListener(new View.OnClickListener() {
@@ -197,14 +197,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-//                                    int val = np.getValue();
-                                    int val = wheelResult;
-                                    if (val > 20)
-                                        val = 20 + (val - 20) * 5;
+                                    if (wheelResult > 20)
+                                        wheelResult = 20 + (wheelResult - 20) * 5;
                                     String s;
-                                    countMax.set(gxIdx, val);
+                                    countMax.set(gxIdx, wheelResult);
                                     utils.setIntegerArrayPref("countMax", countMax);
-                                    s = ""+val;
+                                    s = ""+wheelResult;
                                     currTVCount.setText(s);
                                     currTVCount.invalidate();
                                 }
@@ -241,7 +239,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     else
                         ivKeep.setImageResource(R.mipmap.i_keep_123);
 
-                    tvKeepCount.setTextColor((keep_123 == 0) ? mActivity.getResources().getColor(R.color.countBack):mActivity.getResources().getColor(R.color.countFore));
+                    tvKeepCount.setTextColor((keep_123 == 0) ?
+                            ContextCompat.getColor(mContext,R.color.countBack):ContextCompat.getColor(mContext,R.color.countFore));
                     utils.setIntegerArrayPref("keep123", keep123);
                     ivKeep.invalidate();
                 }
@@ -283,11 +282,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("OK",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    int val = wheelResult;
                                     String s;
-                                    keepMax.set(gxIdx, val);
+                                    keepMax.set(gxIdx, wheelResult);
                                     utils.setIntegerArrayPref("keepMax", keepMax);
-                                    s = ""+val;
+                                    s = ""+wheelResult;
                                     tvKeepCount.setText(s);
                                     tvKeepCount.invalidate();
                                 }
@@ -306,7 +304,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     for (int i = 0; i < 21; i++) result.add("" + i);
                     return result;
                 }
-
             });
 
             ivUpDown.setOnClickListener(new View.OnClickListener() {
@@ -349,32 +346,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View view) {
                     gxIdx = getAdapterPosition();
-                    if (cdtRunning) {
-                        finishHandler();
-                    }
-                    else {
-                        nowTVCount = itemView.findViewById(R.id.nowCount);
-                        nowIVGo = itemView.findViewById(R.id.go);
-                        nowCard = itemView.findViewById(R.id.card_view);
+                    nowTVCount = itemView.findViewById(R.id.nowCount);
+                    nowIVGo = itemView.findViewById(R.id.go);
+                    nowIVStop = itemView.findViewById(R.id.stop);
+                    nowCard = itemView.findViewById(R.id.card_view);
 //                        nowIVGo.setImageResource(R.mipmap.i_go_red);
-                        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(nowIVGo);
-                        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
-
-                        int color = mActivity.getResources().getColor(R.color.cardRun);
-                        nowCard.setCardBackgroundColor(color);
-                        nowCard.invalidate();
-                        calcInterval();
-                        setupSoundTable();
-                        sNow = 0;
-                        cdtRunning = true;
-                        int cdtDownTime = (soundText.length+2) * interval + 10;
-                        runCountDownTimer(cdtDownTime);
-                    }
+                    nowIVGo.setVisibility(View.GONE);
+                    nowIVStop.setVisibility(View.VISIBLE);
+//                    GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(nowIVStop);
+//                    Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
+                    nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext,R.color.cardRun));
+                    nowCard.invalidate();
+                    calcInterval();
+                    setupSoundTable();
+                    sNow = 0;
+                    cdtRunning = true;
+                    int cdtDownTime = (soundText.length+2) * interval + 10;
+                    runCountDownTimer(cdtDownTime);
                 }
             });
 
+            ivStop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gxIdx = getAdapterPosition();
+                    finishHandler();
+                }
+            });
         }
-
 
         int count, display, increase, interval, sIdx, sNow;
         int [] soundTable;
@@ -506,6 +505,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
+
     private static final Handler displayCount = new Handler() {
         public void handleMessage(Message msg) {
             nowTVCount.setText(msg.obj.toString());
@@ -518,13 +518,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             gxCDT.cancel();
             gxCDT = null;
         }
-        cdtRunning = false;
-        Message msg = Message.obtain();
-        msg.obj = ""+ countMax.get(gxIdx);
-        displayCount.sendMessage(msg);
-        nowIVGo.setImageResource(R.mipmap.i_go_green);
-        int color = mActivity.getResources().getColor(R.color.cardBack);
-        nowCard.setCardBackgroundColor(color);
+        if (cdtRunning) {
+            cdtRunning = false;
+            Message msg = Message.obtain();
+            msg.obj = "" + countMax.get(gxIdx);
+            displayCount.sendMessage(msg);
+            nowIVGo.setVisibility(View.VISIBLE);
+            nowIVStop.setVisibility(View.GONE);
+//            nowIVGo.setImageResource(R.mipmap.i_go_green);
+            nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
+        }
     }
 
     void stopHandler() {
@@ -541,6 +544,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.ivUpDown.setImageResource(isUp.get(position) ? R.mipmap.i_up_true : R.mipmap.i_up_false);
         holder.ivReady.setImageResource(sayReady.get(position)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
         holder.ivStart.setImageResource(sayStart.get(position)? R.mipmap.i_start_true:R.mipmap.i_start_false);
+        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivStop);
+        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
+        holder.ivStop.setVisibility(View.GONE);
 
         if (keep123.get(position) == 0)
             holder.ivKeep.setImageResource(R.mipmap.i_keep_none);
@@ -549,7 +555,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         else
             holder.ivKeep.setImageResource(R.mipmap.i_keep_123);
         s = ""+keepMax.get(position); holder.tvKeepCount.setText(s);
-        holder.tvKeepCount.setTextColor(keep123.get(position) != 0 ? mActivity.getResources().getColor(R.color.countFore):mActivity.getResources().getColor(R.color.countBack));
+        holder.tvKeepCount.setTextColor(keep123.get(position) != 0 ?
+                ContextCompat.getColor(mContext, R.color.countFore): ContextCompat.getColor(mContext, R.color.countBack));
     }
 
 }

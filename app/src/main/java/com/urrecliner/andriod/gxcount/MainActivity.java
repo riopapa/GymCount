@@ -1,14 +1,13 @@
 package com.urrecliner.andriod.gxcount;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import static com.urrecliner.andriod.gxcount.Vars.countMax;
 import static com.urrecliner.andriod.gxcount.Vars.isUp;
@@ -109,8 +108,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(SGL);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, SGL.getOrientation()));
         recyclerView.setLayoutManager(SGL);
-        recyclerView.setBackgroundColor(0x88000000 + Color.GRAY);
-
+        recyclerView.setBackgroundColor(0x88000000 + ContextCompat.getColor(mContext, R.color.cardBack));
         recyclerViewAdapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
         utils.log(logId,"Ready");
@@ -126,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_stop) {
             recyclerViewAdapter.stopHandler();
-            Toast.makeText(getApplicationContext(),"STOP", Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
