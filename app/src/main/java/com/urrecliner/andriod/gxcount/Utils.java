@@ -9,6 +9,7 @@ import android.media.SoundPool;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -237,8 +238,11 @@ class Utils {
 //                }
 //            }, 1000);
 //        }
-        if (soundPool == null)
-            log("sound"," is null");
+        if (soundPool == null) {
+            soundInitiate();
+            Toast.makeText(mContext, "soundPool reInitiated",Toast.LENGTH_LONG).show();
+            log("sound", " soundPool initiated");
+        }
         soundPool.play(soundId, volume, volume, 1, 0, 1);
     }
 

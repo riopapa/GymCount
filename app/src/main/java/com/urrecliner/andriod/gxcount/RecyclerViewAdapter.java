@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -49,7 +49,6 @@ import static com.urrecliner.andriod.gxcount.Vars.utils;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements NumberPicker.OnValueChangeListener {
 
-
     private static TextView nowTVCount;
     private static ImageView nowIVGo, nowIVStop;
     private static CardView nowCard;
@@ -70,7 +69,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new ViewHolder(view);
     }
 
-    static TextView currTVKeep, currTVCount;
+    private static TextView currTVKeep, currTVCount;
     @Override
     public void onValueChange(NumberPicker picker, int type, int newVal) {
         String s;
@@ -227,22 +226,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivKeep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    gxIdx = getAdapterPosition();
-                    int keep_123 = keep123.get(gxIdx) + 1;
-                    if (keep_123 > 2)
-                        keep_123 = 0;
-                    keep123.set(gxIdx, keep_123);
-                    if (keep_123 == 0)
-                        ivKeep.setImageResource(R.mipmap.i_keep_none);
-                    else if (keep_123 == 1)
-                        ivKeep.setImageResource(R.mipmap.i_keep_true);
-                    else
-                        ivKeep.setImageResource(R.mipmap.i_keep_123);
+                gxIdx = getAdapterPosition();
+                int keep_123 = keep123.get(gxIdx) + 1;
+                if (keep_123 > 2)
+                    keep_123 = 0;
+                keep123.set(gxIdx, keep_123);
+                if (keep_123 == 0)
+                    ivKeep.setImageResource(R.mipmap.i_keep_none);
+                else if (keep_123 == 1)
+                    ivKeep.setImageResource(R.mipmap.i_keep_true);
+                else
+                    ivKeep.setImageResource(R.mipmap.i_keep_123);
 
-                    tvKeepCount.setTextColor((keep_123 == 0) ?
-                            ContextCompat.getColor(mContext,R.color.countBack):ContextCompat.getColor(mContext,R.color.countFore));
-                    utils.setIntegerArrayPref("keep123", keep123);
-                    ivKeep.invalidate();
+                tvKeepCount.setTextColor((keep_123 == 0) ?
+                        ContextCompat.getColor(mContext,R.color.countBack):ContextCompat.getColor(mContext,R.color.countFore));
+                utils.setIntegerArrayPref("keep123", keep123);
+                ivKeep.invalidate();
                 }
             });
 
@@ -263,8 +262,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                     final List<String> wheelValues = getKeepMaxTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
-                    if (wV == null)
-                        Log.e("wV"," is null");
+                    assert wheelValues != null;
                     wV.setItems(wheelValues);
                     int val = keepMax.get(gxIdx);
                     wV.selectIndex(val);
@@ -309,68 +307,66 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivUpDown.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    gxIdx = getAdapterPosition();
-                    boolean tf = !isUp.get(gxIdx);
-                    isUp.set(gxIdx, tf);
-                    ivUpDown.setImageResource((tf) ? R.mipmap.i_up_true:R.mipmap.i_up_false);
-                    utils.setBooleanArrayPref("isUp", isUp);
-                    ivUpDown.invalidate();
+                gxIdx = getAdapterPosition();
+                boolean tf = !isUp.get(gxIdx);
+                isUp.set(gxIdx, tf);
+                ivUpDown.setImageResource((tf) ? R.mipmap.i_up_true:R.mipmap.i_up_false);
+                utils.setBooleanArrayPref("isUp", isUp);
+                ivUpDown.invalidate();
                 }
             });
 
             ivReady.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    gxIdx = getAdapterPosition();
-                    boolean tf = !sayReady.get(gxIdx);
-                    sayReady.set(gxIdx, tf);
-                    ivReady.setImageResource((tf)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
-                    utils.setBooleanArrayPref("sayReady", sayReady);
-                    ivReady.invalidate();
+                gxIdx = getAdapterPosition();
+                boolean tf = !sayReady.get(gxIdx);
+                sayReady.set(gxIdx, tf);
+                ivReady.setImageResource((tf)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
+                utils.setBooleanArrayPref("sayReady", sayReady);
+                ivReady.invalidate();
                 }
             });
 
             ivStart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    gxIdx = getAdapterPosition();
-                    boolean tf = !sayStart.get(gxIdx);
-                    sayStart.set(gxIdx, tf);
-                    ivStart.setImageResource((tf) ? R.mipmap.i_start_true:R.mipmap.i_start_false);
-                    utils.setBooleanArrayPref("sayStart", sayStart);
-                    ivStart.invalidate();
+                gxIdx = getAdapterPosition();
+                boolean tf = !sayStart.get(gxIdx);
+                sayStart.set(gxIdx, tf);
+                ivStart.setImageResource((tf) ? R.mipmap.i_start_true:R.mipmap.i_start_false);
+                utils.setBooleanArrayPref("sayStart", sayStart);
+                ivStart.invalidate();
                 }
             });
 
             ivGo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    gxIdx = getAdapterPosition();
-                    nowTVCount = itemView.findViewById(R.id.nowCount);
-                    nowIVGo = itemView.findViewById(R.id.go);
-                    nowIVStop = itemView.findViewById(R.id.stop);
-                    nowCard = itemView.findViewById(R.id.card_view);
-//                        nowIVGo.setImageResource(R.mipmap.i_go_red);
-                    nowIVGo.setVisibility(View.GONE);
-                    nowIVStop.setVisibility(View.VISIBLE);
-//                    GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(nowIVStop);
-//                    Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
-                    nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext,R.color.cardRun));
-                    nowCard.invalidate();
-                    calcInterval();
-                    setupSoundTable();
-                    sNow = 0;
-                    cdtRunning = true;
-                    int cdtDownTime = (soundText.length+2) * interval + 10;
-                    runCountDownTimer(cdtDownTime);
+                Toast.makeText(mContext,"Press Running icon to Stop",Toast.LENGTH_LONG).show();
+                gxIdx = getAdapterPosition();
+                nowTVCount = itemView.findViewById(R.id.nowCount);
+                nowIVGo = itemView.findViewById(R.id.go);
+                nowIVStop = itemView.findViewById(R.id.stop);
+                nowCard = itemView.findViewById(R.id.card_view);
+                nowIVGo.setVisibility(View.GONE);
+                nowIVStop.setVisibility(View.VISIBLE);
+                nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext,R.color.cardRun));
+                nowCard.invalidate();
+                calcInterval();
+                setupSoundTable();
+                sNow = 0;
+                cdtRunning = true;
+                int cdtDownTime = (soundText.length+2) * interval + 10;
+                runCountDownTimer(cdtDownTime);
                 }
             });
 
             ivStop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    gxIdx = getAdapterPosition();
-                    finishHandler();
+                gxIdx = getAdapterPosition();
+                finishHandler();
                 }
             });
         }
@@ -545,7 +541,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.ivReady.setImageResource(sayReady.get(position)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
         holder.ivStart.setImageResource(sayStart.get(position)? R.mipmap.i_start_true:R.mipmap.i_start_false);
         GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivStop);
-        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
+//        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
+        Glide.with(mActivity).load(R.drawable.running_gifmaker).into(gifImage);
         holder.ivStop.setVisibility(View.GONE);
 
         if (keep123.get(position) == 0)
