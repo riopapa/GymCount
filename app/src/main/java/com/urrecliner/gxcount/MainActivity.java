@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.gxcount;
+package com.urrecliner.gxcount;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,19 +9,19 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import static com.urrecliner.andriod.gxcount.Vars.countMax;
-import static com.urrecliner.andriod.gxcount.Vars.isUp;
-import static com.urrecliner.andriod.gxcount.Vars.keep123;
-import static com.urrecliner.andriod.gxcount.Vars.keepMax;
-import static com.urrecliner.andriod.gxcount.Vars.mActivity;
-import static com.urrecliner.andriod.gxcount.Vars.mContext;
-import static com.urrecliner.andriod.gxcount.Vars.recyclerView;
-import static com.urrecliner.andriod.gxcount.Vars.sayReady;
-import static com.urrecliner.andriod.gxcount.Vars.sayStart;
-import static com.urrecliner.andriod.gxcount.Vars.sharedPreferences;
-import static com.urrecliner.andriod.gxcount.Vars.speed;
-import static com.urrecliner.andriod.gxcount.Vars.typeName;
-import static com.urrecliner.andriod.gxcount.Vars.utils;
+import static com.urrecliner.gxcount.Vars.countMax;
+import static com.urrecliner.gxcount.Vars.isUp;
+import static com.urrecliner.gxcount.Vars.keep123;
+import static com.urrecliner.gxcount.Vars.keepMax;
+import static com.urrecliner.gxcount.Vars.mActivity;
+import static com.urrecliner.gxcount.Vars.mContext;
+import static com.urrecliner.gxcount.Vars.recyclerView;
+import static com.urrecliner.gxcount.Vars.sayReady;
+import static com.urrecliner.gxcount.Vars.sayStart;
+import static com.urrecliner.gxcount.Vars.sharedPreferences;
+import static com.urrecliner.gxcount.Vars.speed;
+import static com.urrecliner.gxcount.Vars.typeName;
+import static com.urrecliner.gxcount.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
 

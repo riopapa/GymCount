@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.gxcount;
+package com.urrecliner.gxcount;
 
 import android.content.Context;
 import android.content.res.TypedArray;

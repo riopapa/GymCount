@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.gxcount;
+package com.urrecliner.gxcount;
 
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -28,29 +27,29 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.urrecliner.andriod.gxcount.Vars.cdtRunning;
-import static com.urrecliner.andriod.gxcount.Vars.countMax;
-import static com.urrecliner.andriod.gxcount.Vars.gxCDT;
-import static com.urrecliner.andriod.gxcount.Vars.gxIdx;
-import static com.urrecliner.andriod.gxcount.Vars.isUp;
-import static com.urrecliner.andriod.gxcount.Vars.keep123;
-import static com.urrecliner.andriod.gxcount.Vars.keepMax;
-import static com.urrecliner.andriod.gxcount.Vars.mActivity;
-import static com.urrecliner.andriod.gxcount.Vars.mContext;
-import static com.urrecliner.andriod.gxcount.Vars.sayReady;
-import static com.urrecliner.andriod.gxcount.Vars.sayStart;
-import static com.urrecliner.andriod.gxcount.Vars.sndShortTbl;
-import static com.urrecliner.andriod.gxcount.Vars.sndSpecialTbl;
-import static com.urrecliner.andriod.gxcount.Vars.sndTbl;
-import static com.urrecliner.andriod.gxcount.Vars.sndTenTbl;
-import static com.urrecliner.andriod.gxcount.Vars.speed;
-import static com.urrecliner.andriod.gxcount.Vars.typeName;
-import static com.urrecliner.andriod.gxcount.Vars.utils;
+import static com.urrecliner.gxcount.Vars.cdtRunning;
+import static com.urrecliner.gxcount.Vars.countMax;
+import static com.urrecliner.gxcount.Vars.gxCDT;
+import static com.urrecliner.gxcount.Vars.gxIdx;
+import static com.urrecliner.gxcount.Vars.isUp;
+import static com.urrecliner.gxcount.Vars.keep123;
+import static com.urrecliner.gxcount.Vars.keepMax;
+import static com.urrecliner.gxcount.Vars.mActivity;
+import static com.urrecliner.gxcount.Vars.mContext;
+import static com.urrecliner.gxcount.Vars.sayReady;
+import static com.urrecliner.gxcount.Vars.sayStart;
+import static com.urrecliner.gxcount.Vars.sndShortTbl;
+import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
+import static com.urrecliner.gxcount.Vars.sndTbl;
+import static com.urrecliner.gxcount.Vars.sndTenTbl;
+import static com.urrecliner.gxcount.Vars.speed;
+import static com.urrecliner.gxcount.Vars.typeName;
+import static com.urrecliner.gxcount.Vars.utils;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements NumberPicker.OnValueChangeListener {
 
     private static TextView nowTVCount;
-    private static ImageView nowIVGo, nowIVStop;
+    private static ImageView nowIVGo, nowIVRun, nowIVStop;
     private static CardView nowCard;
     private static MediaPlayer mediaPlayer;
     private static String sReady = "<준비>";
@@ -99,7 +98,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView tvTypeName;
         TextView tvNowCount;
         SeekBar sbSpeed;
-        ImageView ivUpDown, ivKeep, ivStart, ivReady, ivGo, ivStop;
+        ImageView ivUpDown, ivKeep, ivStart, ivReady, ivGo, ivRun, ivStop;
         TextView tvKeepCount;
         int wheelResult = 0;
 
@@ -115,7 +114,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivStart = itemView.findViewById(R.id.start);
             ivReady = itemView.findViewById(R.id.ready);
             ivGo = itemView.findViewById(R.id.go);
+            ivRun = itemView.findViewById(R.id.run);
+            ivRun.setVisibility(View.GONE);
             ivStop = itemView.findViewById(R.id.stop);
+            ivStop.setVisibility(View.GONE);
 
             tvTypeName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -343,13 +345,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivGo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                Toast.makeText(mContext,"Press Running icon to Stop",Toast.LENGTH_LONG).show();
                 gxIdx = getAdapterPosition();
                 nowTVCount = itemView.findViewById(R.id.nowCount);
                 nowIVGo = itemView.findViewById(R.id.go);
+                nowIVRun = itemView.findViewById(R.id.run);
                 nowIVStop = itemView.findViewById(R.id.stop);
                 nowCard = itemView.findViewById(R.id.card_view);
                 nowIVGo.setVisibility(View.GONE);
+                nowIVRun.setVisibility(View.VISIBLE);
                 nowIVStop.setVisibility(View.VISIBLE);
                 nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext,R.color.cardRun));
                 nowCard.invalidate();
@@ -520,6 +523,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             msg.obj = "" + countMax.get(gxIdx);
             displayCount.sendMessage(msg);
             nowIVGo.setVisibility(View.VISIBLE);
+            nowIVRun.setVisibility(View.GONE);
             nowIVStop.setVisibility(View.GONE);
 //            nowIVGo.setImageResource(R.mipmap.i_go_green);
             nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
@@ -540,9 +544,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.ivUpDown.setImageResource(isUp.get(position) ? R.mipmap.i_up_true : R.mipmap.i_up_false);
         holder.ivReady.setImageResource(sayReady.get(position)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
         holder.ivStart.setImageResource(sayStart.get(position)? R.mipmap.i_start_true:R.mipmap.i_start_false);
-        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivStop);
+        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivRun);
 //        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
         Glide.with(mActivity).load(R.drawable.running_gifmaker).into(gifImage);
+        holder.ivRun.setVisibility(View.GONE);
         holder.ivStop.setVisibility(View.GONE);
 
         if (keep123.get(position) == 0)

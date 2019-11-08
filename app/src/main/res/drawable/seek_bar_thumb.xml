@@ -3,8 +3,8 @@
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/DarkCyan"/>
-            <stroke android:color="@color/Plum" android:width="5dp"/>
-            <size android:height="30dp" android:width="30dp"/>
+            <stroke android:color="@color/Plum" android:width="4dp"/>
+            <size android:height="20dp" android:width="20dp"/>
         </shape>
     </item>
 </selector>

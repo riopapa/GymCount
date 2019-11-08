@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.urrecliner.andriod.healtycount.MainActivity">
+    tools:context="com.urrecliner.healtycount.MainActivity">
 
     <item
         android:id="@+id/action_stop"

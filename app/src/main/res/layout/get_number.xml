@@ -38,7 +38,7 @@
         android:textStyle="bold"
         android:textColor="@color/cardRun"/>
 
-    <com.urrecliner.andriod.gxcount.WheelView
+    <com.urrecliner.gxcount.WheelView
         android:id="@+id/wheel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.gxcount;
+package com.urrecliner.gxcount;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

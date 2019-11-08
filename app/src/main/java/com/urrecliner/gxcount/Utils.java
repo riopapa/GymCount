@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.gxcount;
+package com.urrecliner.gxcount;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,16 +17,16 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static com.urrecliner.andriod.gxcount.Vars.mContext;
-import static com.urrecliner.andriod.gxcount.Vars.sharedPreferences;
-import static com.urrecliner.andriod.gxcount.Vars.sndTenTbl;
-import static com.urrecliner.andriod.gxcount.Vars.sndShortTbl;
-import static com.urrecliner.andriod.gxcount.Vars.sndTbl;
-import static com.urrecliner.andriod.gxcount.Vars.sndSpecialTbl;
-import static com.urrecliner.andriod.gxcount.Vars.soundTenSource;
-import static com.urrecliner.andriod.gxcount.Vars.soundShort;
-import static com.urrecliner.andriod.gxcount.Vars.soundSource;
-import static com.urrecliner.andriod.gxcount.Vars.soundSpecial;
+import static com.urrecliner.gxcount.Vars.mContext;
+import static com.urrecliner.gxcount.Vars.sharedPreferences;
+import static com.urrecliner.gxcount.Vars.sndTenTbl;
+import static com.urrecliner.gxcount.Vars.sndShortTbl;
+import static com.urrecliner.gxcount.Vars.sndTbl;
+import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
+import static com.urrecliner.gxcount.Vars.soundTenSource;
+import static com.urrecliner.gxcount.Vars.soundShort;
+import static com.urrecliner.gxcount.Vars.soundSource;
+import static com.urrecliner.gxcount.Vars.soundSpecial;
 
 class Utils {
 
