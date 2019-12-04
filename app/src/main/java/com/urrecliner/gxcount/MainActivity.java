@@ -9,19 +9,22 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import static com.urrecliner.gxcount.Vars.countMax;
-import static com.urrecliner.gxcount.Vars.isUp;
-import static com.urrecliner.gxcount.Vars.keep123;
-import static com.urrecliner.gxcount.Vars.keepMax;
+import static com.urrecliner.gxcount.Vars.holds;
+import static com.urrecliner.gxcount.Vars.mainCounts;
+import static com.urrecliner.gxcount.Vars.holdCounts;
+import static com.urrecliner.gxcount.Vars.isUps;
 import static com.urrecliner.gxcount.Vars.mActivity;
 import static com.urrecliner.gxcount.Vars.mContext;
 import static com.urrecliner.gxcount.Vars.recyclerView;
-import static com.urrecliner.gxcount.Vars.sayReady;
-import static com.urrecliner.gxcount.Vars.sayStart;
+import static com.urrecliner.gxcount.Vars.sayReadys;
+import static com.urrecliner.gxcount.Vars.sayStarts;
 import static com.urrecliner.gxcount.Vars.sharedPreferences;
-import static com.urrecliner.gxcount.Vars.speed;
-import static com.urrecliner.gxcount.Vars.typeName;
+import static com.urrecliner.gxcount.Vars.speeds;
+import static com.urrecliner.gxcount.Vars.stepCounts;
+import static com.urrecliner.gxcount.Vars.steps;
+import static com.urrecliner.gxcount.Vars.typeNames;
 import static com.urrecliner.gxcount.Vars.utils;
+import static java.lang.Math.min;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,83 +38,43 @@ public class MainActivity extends AppCompatActivity {
         mActivity = this;
         utils = new Utils();
         utils.soundInitiate();
+        recyclerViewAdapter = new RecyclerViewAdapter();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        typeName = utils.getStringArrayPref("typeName");
-        speed = utils.getIntegerArrayPref("speed");
-        countMax = utils.getIntegerArrayPref("countMax");
-        isUp = utils.getBooleanArrayPref("isUp");
-        sayStart = utils.getBooleanArrayPref("sayStart");
-        sayReady = utils.getBooleanArrayPref("sayReady");
-        keep123 = utils.getIntegerArrayPref("keep123");
-        keepMax = utils.getIntegerArrayPref("keepMax");
+        typeNames = utils.getStringArrayPref("typeNames");
+        speeds = utils.getIntegerArrayPref("speeds");
+        mainCounts = utils.getIntegerArrayPref("mainCounts");
+        stepCounts = utils.getIntegerArrayPref("stepCounts");
+        steps = utils.getBooleanArrayPref("steps");
+        holdCounts = utils.getIntegerArrayPref("holdCounts");
+        holds = utils.getBooleanArrayPref("holds");
+        isUps = utils.getBooleanArrayPref("isUps");
+        sayStarts = utils.getBooleanArrayPref("sayStarts");
+        sayReadys = utils.getBooleanArrayPref("sayReadys");
 
-        int cardCount = 6;
-        if (typeName.size() != cardCount) {
-            typeName.clear();
-            for (int i = 0; i < cardCount; i++) {
-                typeName.add("이름 " + (i + 1));
-            }
-            utils.setStringArrayPref("typeName", typeName);
-        }
-        if (speed.size() != cardCount) {
-            speed.clear();
-            for (int i = 0; i < cardCount; i++) {
-                speed.add(10);
-            }
-            utils.setIntegerArrayPref("speed", speed);
-        }
-        if (countMax.size() != cardCount) {
-            countMax.clear();
-            for (int i = 0; i < cardCount; i++) {
-                countMax.add(10*(i+1));
-            }
-            utils.setIntegerArrayPref("countMax", countMax);
-        }
-        if (isUp.size() != cardCount) {
-            isUp.clear();
-            for (int i = 0; i < cardCount; i++) {
-                isUp.add(true);
-            }
-            utils.setBooleanArrayPref("isUp", isUp);
-        }
-        if (sayStart.size() != cardCount) {
-            sayStart.clear();
-            for (int i = 0; i < cardCount; i++) {
-                sayStart.add(true);
-            }
-            utils.setBooleanArrayPref("sayStart", sayStart);
-        }
-        if (sayReady.size() != cardCount) {
-            sayReady.clear();
-            for (int i = 0; i < cardCount; i++) {
-                sayReady.add(true);
-            }
-            utils.setBooleanArrayPref("sayReady", sayReady);
-        }
-        if (keep123.size() != cardCount) {
-            keep123.clear();
-            for (int i = 0; i < cardCount; i++) {
-                keep123.add(1);
-            }
-            utils.setBooleanArrayPref("sayReady", sayReady);
-        }
-        if (keepMax.size() != cardCount) {
-            keepMax.clear();
-            for (int i = 0; i < cardCount; i++) {
-                keepMax.add(5);
-            }
-            utils.setIntegerArrayPref("keepMax",keepMax);
+//        utils.log("size","typeNames:"+typeNames.size()+" speeds:"+speeds.size()+" mainCounts:"+mainCounts.size()+" stepCounts"+stepCounts.size()+" steps"+steps.size());
+        int minSize = min(typeNames.size(), speeds.size());
+        minSize = min(minSize, mainCounts.size());
+        minSize = min(minSize, stepCounts.size());
+        minSize = min(minSize, steps.size());
+        minSize = min(minSize, holdCounts.size());
+        minSize = min(minSize, holds.size());
+        minSize = min(minSize, isUps.size());
+        minSize = min(minSize, sayStarts.size());
+        minSize = min(minSize, sayReadys.size());
+        if (minSize == 0) {
+            typeNames.clear(); mainCounts.clear(); steps.clear(); stepCounts.clear(); holds.clear(); holdCounts.clear(); isUps.clear(); sayStarts.clear(); sayReadys.clear();
+            recyclerViewAdapter.addNewType();
+            minSize = 1;
         }
         recyclerView = findViewById(R.id.recyclerView);
-        StaggeredGridLayoutManager SGL = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager SGL = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(SGL);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, SGL.getOrientation()));
         recyclerView.setLayoutManager(SGL);
         recyclerView.setBackgroundColor(0x88000000 + ContextCompat.getColor(mContext, R.color.cardBack));
-        recyclerViewAdapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
-        utils.log(logId,"Ready");
+        utils.log(logId,"Ready "+minSize);
     }
 
     @Override
@@ -124,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_stop) {
             recyclerViewAdapter.stopHandler();
+            return true;
+        }
+        if (item.getItemId() == R.id.action_add) {
+            recyclerViewAdapter.addNewType();
             return true;
         }
         return super.onOptionsItemSelected(item);

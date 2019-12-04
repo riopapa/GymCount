@@ -12,14 +12,16 @@ import java.util.ArrayList;
 class Vars {
     static SharedPreferences sharedPreferences;
 
-    static ArrayList<String> typeName;
-    static ArrayList<Integer> speed;
-    static ArrayList<Integer> countMax;
-    static ArrayList<Boolean> isUp;
-    static ArrayList<Boolean> sayStart;
-    static ArrayList<Boolean> sayReady;
-    static ArrayList<Integer> keep123;
-    static ArrayList<Integer> keepMax;
+    static ArrayList<String> typeNames;
+    static ArrayList<Integer> speeds;
+    static ArrayList<Integer> mainCounts;
+    static ArrayList<Boolean> isUps;
+    static ArrayList<Boolean> sayStarts;
+    static ArrayList<Boolean> sayReadys;
+    static ArrayList<Boolean> steps;
+    static ArrayList<Integer> stepCounts;
+    static ArrayList<Boolean> holds;
+    static ArrayList<Integer> holdCounts;
 
     @SuppressLint("StaticFieldLeak")
     static Context mContext;
