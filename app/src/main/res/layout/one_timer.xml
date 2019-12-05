@@ -27,22 +27,22 @@
                 android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/typeName"
-                    android:layout_weight="8"
+                    android:layout_weight="9"
                     android:layout_width="0dp"
-                    android:layout_height="36dp"
+                    android:layout_height="@dimen/item_height"
                     android:gravity="center_horizontal"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:text="Type Name"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/text_size"
                     android:layout_margin="2dp"
                     android:background="@color/nameBack"
                     android:textColor="@color/nameFore"/>
                 <ImageView
                     android:id="@+id/delete"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:layout_gravity="center"
-                    android:layout_height="32dp"
+                    android:layout_gravity="top"
+                    android:layout_height="@dimen/item_height"
                     android:layout_margin="2dp"
                     android:src="@mipmap/i_delete" />
             </LinearLayout>
@@ -52,28 +52,28 @@
                 android:layout_height="wrap_content" >
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="4"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="5"
+                    android:layout_height="@dimen/item_height"
+                    android:layout_gravity="center"
                     android:layout_margin="2dp"
                     android:padding="2dp"
                     android:text="속도"
                     android:gravity="center"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/text_size"
                     android:textStyle="bold"
                     android:textColor="@color/countFore"/>
                 <TextView
                     android:id="@+id/speed"
                     android:layout_width="0dp"
-                    android:layout_weight="6"
-                    android:layout_height="36sp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="5"
+                    android:layout_height="@dimen/item_height"
+                    android:layout_gravity="center"
                     android:layout_margin="2dp"
                     android:padding="2dp"
                     android:background="@drawable/back_border"
                     android:text="10회"
-                    android:gravity="center_horizontal"
-                    android:textSize="24dp"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_size"
                     android:textStyle="bold"
                     android:textColor="@color/countFore"/>
             </LinearLayout>
@@ -83,28 +83,28 @@
                 android:layout_height="wrap_content" >
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="4"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="5"
+                    android:layout_height="@dimen/item_height"
+                    android:layout_gravity="center"
                     android:layout_margin="2dp"
                     android:padding="2dp"
                     android:text="횟수"
                     android:gravity="center"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/text_size"
                     android:textStyle="bold"
                     android:textColor="@color/countFore"/>
                 <TextView
                     android:id="@+id/mainCount"
                     android:layout_width="0dp"
-                    android:layout_weight="6"
-                    android:layout_height="36sp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="5"
+                    android:layout_height="@dimen/item_height"
+                    android:layout_gravity="center"
                     android:layout_margin="2dp"
                     android:padding="2dp"
                     android:background="@drawable/back_border"
                     android:text="10회"
-                    android:gravity="center_horizontal"
-                    android:textSize="24dp"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_size"
                     android:textStyle="bold"
                     android:textColor="@color/countFore"/>
             </LinearLayout>
@@ -113,27 +113,27 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
+
                 <ImageView
                     android:id="@+id/step"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_gravity="center"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/item_height"
                     android:layout_margin="2dp"
                     android:src="@mipmap/i_step_false" />
-
                 <TextView
                     android:id="@+id/stepCount"
                     android:layout_width="0dp"
-                    android:layout_weight="6"
-                    android:layout_height="36sp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="5"
+                    android:layout_height="@dimen/item_height"
+                    android:layout_gravity="center"
                     android:layout_margin="2dp"
                     android:padding="2dp"
                     android:background="@drawable/back_border"
-                    android:text="10회"
-                    android:gravity="center_horizontal"
-                    android:textSize="24dp"
+                    android:text="10"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_size"
                     android:textStyle="bold"
                     android:textColor="@color/countFore"/>
             </LinearLayout>
@@ -142,27 +142,28 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
+
                 <ImageView
                     android:id="@+id/hold"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_gravity="center"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/item_height"
                     android:layout_margin="2dp"
                     android:src="@mipmap/i_hold_false" />
 
                 <TextView
                     android:id="@+id/holdCount"
                     android:layout_width="0dp"
-                    android:layout_weight="6"
-                    android:layout_height="36sp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="5"
+                    android:layout_height="@dimen/item_height"
+                    android:layout_gravity="center"
                     android:layout_margin="2dp"
                     android:padding="2dp"
                     android:background="@drawable/back_border"
-                    android:text="10회"
+                    android:text="10"
                     android:gravity="center_horizontal"
-                    android:textSize="24dp"
+                    android:textSize="@dimen/text_size"
                     android:textStyle="bold"
                     android:textColor="@color/countFore"/>
             </LinearLayout>
@@ -179,7 +180,7 @@
                     android:layout_weight="10"
                     android:layout_width="0dp"
                     android:layout_gravity="center"
-                    android:layout_height="32dp"
+                    android:layout_height="@dimen/item_height"
                     android:layout_margin="2dp"
                     android:src="@mipmap/i_up_true" />
 
@@ -188,7 +189,7 @@
                     android:layout_weight="10"
                     android:layout_width="0dp"
                     android:layout_gravity="center"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/item_height"
                     android:layout_margin="4dp"
                     android:src="@mipmap/i_ready_true" />
                 <ImageView
@@ -196,7 +197,7 @@
                     android:layout_weight="10"
                     android:layout_width="0dp"
                     android:layout_gravity="center"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/item_height"
                     android:layout_margin="2dp"
                     android:src="@mipmap/i_start_true" />
             </LinearLayout>
@@ -209,23 +210,23 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/go"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="@dimen/item_heightBig"
                     android:src="@mipmap/i_go_green" />
 
                 <ImageView
                     android:id="@+id/run"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="80dp"
+                    android:layout_weight="4"
+                    android:layout_height="@dimen/item_heightBig"
                     android:src="@drawable/running_gifmaker" />
 
                 <ImageView
                     android:id="@+id/stop"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="80dp"
+                    android:layout_weight="3"
+                    android:layout_height="@dimen/item_heightBig"
                     android:src="@mipmap/i_stop" />
             </LinearLayout>
         </LinearLayout>
