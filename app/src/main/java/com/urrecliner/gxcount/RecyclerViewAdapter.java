@@ -534,8 +534,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         utils.beepSound(soundTable[sNow], 1f);
                         if (soundText[sNow].equals(sReady))
                             SystemClock.sleep((2000));
-                        else if (soundText[sNow].equals(sHolding))
-                            SystemClock.sleep((1000));
+                        else if (soundText[sNow].equals(sStart))
+                            SystemClock.sleep((delayTime));
                         sNow++;
                         if (sNow == sIdx)
                             finishHandler();
@@ -561,12 +561,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             sIdx = 0;
             if (gxInfo.isSayReady()) {
                 soundTable[sIdx] = sndSpecialTbl[3];   // R.raw.i_ready
-                soundText[sIdx] = "_";
+                soundText[sIdx] = sReady;
                 sIdx++;
             }
             if (gxInfo.isSayStart()) {
                 soundTable[sIdx] = sndSpecialTbl[2];   // R.raw.i_start
-                soundText[sIdx] = "_";
+                soundText[sIdx] = sStart;
                 sIdx++;
             }
             if (gxInfo.isUp()) {
