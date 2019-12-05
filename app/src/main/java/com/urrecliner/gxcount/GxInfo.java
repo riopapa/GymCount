@@ -25,83 +25,83 @@ public class GxInfo {
         this.sayReady = true;
     }
 
-    public String getTypeName() {
+    String getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
+     void setTypeName(String typeName) {
         this.typeName = typeName;
     }
 
-    public int getSpeed() {
+     int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+     void setSpeed(int speed) {
         this.speed = speed;
     }
 
-    public int getMainCount() {
+     int getMainCount() {
         return mainCount;
     }
 
-    public void setMainCount(int mainCount) {
+     void setMainCount(int mainCount) {
         this.mainCount = mainCount;
     }
 
-    public boolean isStep() {
+     boolean isStep() {
         return step;
     }
 
-    public void setStep(boolean step) {
+     void setStep(boolean step) {
         this.step = step;
     }
 
-    public int getStepCount() {
+     int getStepCount() {
         return stepCount;
     }
 
-    public void setStepCount(int stepCount) {
+     void setStepCount(int stepCount) {
         this.stepCount = stepCount;
     }
 
-    public boolean isHold() {
+     boolean isHold() {
         return hold;
     }
 
-    public void setHold(boolean hold) {
+     void setHold(boolean hold) {
         this.hold = hold;
     }
 
-    public int getHoldCount() {
+     int getHoldCount() {
         return holdCount;
     }
 
-    public void setHoldCount(int holdCount) {
+     void setHoldCount(int holdCount) {
         this.holdCount = holdCount;
     }
 
-    public boolean isUp() {
+     boolean isUp() {
         return isUp;
     }
 
-    public void setUp(boolean up) {
+     void setUp(boolean up) {
         isUp = up;
     }
 
-    public boolean isSayStart() {
+     boolean isSayStart() {
         return sayStart;
     }
 
-    public void setSayStart(boolean sayStart) {
+     void setSayStart(boolean sayStart) {
         this.sayStart = sayStart;
     }
 
-    public boolean isSayReady() {
+     boolean isSayReady() {
         return sayReady;
     }
 
-    public void setSayReady(boolean sayReady) {
+     void setSayReady(boolean sayReady) {
         this.sayReady = sayReady;
     }
 }

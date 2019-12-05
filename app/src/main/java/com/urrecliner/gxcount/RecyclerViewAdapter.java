@@ -3,7 +3,6 @@ package com.urrecliner.gxcount;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
@@ -637,36 +636,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 soundText[sIdx] = STEP_PREFIX + i;
                 sIdx++;
             }
-        }
-    }
-
-    class refreshScreen extends AsyncTask<String, String, String> {
-
-        @Override
-        protected void onPreExecute() {
-        }
-        @Override
-        protected String doInBackground(String... inputParams) {
-
-            String type = inputParams[0];
-            int val = Integer.parseInt(inputParams[1]);
-            switch (type) {
-                case "d":
-                    notifyItemRemoved(val);
-                    break;
-            }
-            return "done";
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-        }
-        @Override
-        protected void onCancelled(String result) {
-        }
-
-        @Override
-        protected void onPostExecute(String doI) {
         }
     }
 
