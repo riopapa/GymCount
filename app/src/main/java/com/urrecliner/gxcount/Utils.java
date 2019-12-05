@@ -7,26 +7,30 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import static com.urrecliner.gxcount.Vars.gxInfos;
 import static com.urrecliner.gxcount.Vars.mContext;
 import static com.urrecliner.gxcount.Vars.sharedPreferences;
-import static com.urrecliner.gxcount.Vars.sndTenTbl;
 import static com.urrecliner.gxcount.Vars.sndShortTbl;
-import static com.urrecliner.gxcount.Vars.sndTbl;
 import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
-import static com.urrecliner.gxcount.Vars.soundTenSource;
+import static com.urrecliner.gxcount.Vars.sndTbl;
+import static com.urrecliner.gxcount.Vars.sndTenTbl;
 import static com.urrecliner.gxcount.Vars.soundShort;
 import static com.urrecliner.gxcount.Vars.soundSource;
 import static com.urrecliner.gxcount.Vars.soundSpecial;
+import static com.urrecliner.gxcount.Vars.soundTenSource;
 
 class Utils {
 
@@ -35,99 +39,6 @@ class Utils {
         traces = Thread.currentThread().getStackTrace();
         String where = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber();
         Log.w(tag, where + " " + text);
-    }
-
-    void setStringArrayPref(String key, ArrayList<String> values) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        JSONArray a = new JSONArray();
-        for (int i = 0; i < values.size(); i++) {
-            a.put(values.get(i));
-        }
-        if (!values.isEmpty()) {
-            editor.putString(key, a.toString());
-        } else {
-            editor.putString(key, null);
-        }
-        editor.apply();
-    }
-
-    ArrayList<String> getStringArrayPref(String key) {
-        String json = sharedPreferences.getString(key, null);
-        ArrayList<String> urls = new ArrayList<>();
-        if (json != null) {
-            try {
-                JSONArray a = new JSONArray(json);
-                for (int i = 0; i < a.length(); i++) {
-                    String url = a.optString(i);
-                    urls.add(url);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return urls;
-    }
-
-    void setIntegerArrayPref(String key, ArrayList<Integer> values) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        JSONArray a = new JSONArray();
-        for (int i = 0; i < values.size(); i++) {
-            a.put(values.get(i));
-        }
-        if (!values.isEmpty()) {
-            editor.putString(key, a.toString());
-        } else {
-            editor.putString(key, null);
-        }
-        editor.apply();
-    }
-
-    ArrayList<Integer> getIntegerArrayPref(String key) {
-        String json = sharedPreferences.getString(key, null);
-        ArrayList<Integer> urls = new ArrayList<>();
-        if (json != null) {
-            try {
-                JSONArray a = new JSONArray(json);
-                for (int i = 0; i < a.length(); i++) {
-                    int url = a.optInt(i);
-                    urls.add(url);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return urls;
-    }
-
-    void setBooleanArrayPref(String key, ArrayList<Boolean> values) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        JSONArray a = new JSONArray();
-        for (int i = 0; i < values.size(); i++) {
-            a.put(values.get(i));
-        }
-        if (!values.isEmpty()) {
-            editor.putString(key, a.toString());
-        } else {
-            editor.putString(key, null);
-        }
-        editor.apply();
-    }
-
-    ArrayList<Boolean> getBooleanArrayPref(String key) {
-        String json = sharedPreferences.getString(key, null);
-        ArrayList<Boolean> urls = new ArrayList<>();
-        if (json != null) {
-            try {
-                JSONArray a = new JSONArray(json);
-                for (int i = 0; i < a.length(); i++) {
-                    boolean url = a.optBoolean(i);
-                    urls.add(url);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return urls;
     }
 
     AudioManager mAudioManager = null;
@@ -184,6 +95,33 @@ class Utils {
                 log("err", "mAudioManager Error " + e.toString());
             }
         }
+    }
+
+
+    void saveSharedPrefTables() {
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(gxInfos);
+        prefsEditor.putString("GxInfo", json);
+        prefsEditor.apply();
+    }
+
+    ArrayList<GxInfo> readSharedPrefTables() {
+
+        ArrayList<GxInfo> list;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("GxInfo", "");
+        if (json.isEmpty()) {
+            list = new ArrayList<>();
+        } else {
+            Type type = new TypeToken<List<GxInfo>>() {
+            }.getType();
+            list = gson.fromJson(json, type);
+        }
+        return list;
     }
 
 

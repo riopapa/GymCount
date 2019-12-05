@@ -131,7 +131,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 	}
 
 	/**
-	 * calculate interval distance between items
+	 * calculate delayTime distance between items
 	 */
 	private void calcIntervalDis() {
 		if (mMarkTextPaint == null) {

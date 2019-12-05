@@ -12,16 +12,7 @@ import java.util.ArrayList;
 class Vars {
     static SharedPreferences sharedPreferences;
 
-    static ArrayList<String> typeNames;
-    static ArrayList<Integer> speeds;
-    static ArrayList<Integer> mainCounts;
-    static ArrayList<Boolean> isUps;
-    static ArrayList<Boolean> sayStarts;
-    static ArrayList<Boolean> sayReadys;
-    static ArrayList<Boolean> steps;
-    static ArrayList<Integer> stepCounts;
-    static ArrayList<Boolean> holds;
-    static ArrayList<Integer> holdCounts;
+    static ArrayList<GxInfo> gxInfos;
 
     @SuppressLint("StaticFieldLeak")
     static Context mContext;
@@ -30,8 +21,8 @@ class Vars {
     @SuppressLint("StaticFieldLeak")
     static RecyclerView recyclerView;
     static Utils utils;
-    static int gxIdx;
-    static CountDownTimer gxCDT;
+    static int currIdx;
+    static CountDownTimer countDownTimer;
     static boolean cdtRunning;
 
     static int[] soundSource = {
