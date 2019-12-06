@@ -9,7 +9,7 @@ public class GxInfo {
     private int stepCount;
     private boolean hold;
     private int holdCount;
-    private boolean isUp;
+    private boolean countUp;
     private boolean sayStart;
     private boolean sayReady;
 
@@ -20,7 +20,7 @@ public class GxInfo {
         this.stepCount = 4;
         this.hold = false;
         this.holdCount = 10;
-        this.isUp = true;
+        this.countUp = true;
         this.sayStart = true;
         this.sayReady = true;
     }
@@ -81,12 +81,12 @@ public class GxInfo {
         this.holdCount = holdCount;
     }
 
-     boolean isUp() {
-        return isUp;
+     boolean isCountUp() {
+        return countUp;
     }
 
-     void setUp(boolean up) {
-        isUp = up;
+     void setCountUp(boolean countUp) {
+        this.countUp = countUp;
     }
 
      boolean isSayStart() {

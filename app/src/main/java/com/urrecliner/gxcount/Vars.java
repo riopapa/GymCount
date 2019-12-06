@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.CountDownTimer;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,7 +24,6 @@ class Vars {
     static RecyclerView recyclerView;
     static Utils utils;
     static int currIdx;
-    static CountDownTimer countDownTimer;
     static boolean cdtRunning;
 
     static int[] soundSource = {
@@ -35,5 +36,13 @@ class Vars {
     static int[] soundSpecial = { R.raw.i_keep, R.raw.i_nomore, R.raw.i_start, R.raw.i_ready, R.raw.i_last};
 
     static int[] sndTbl, sndTenTbl, sndShortTbl, sndSpecialTbl;
+
+    static TextView nowTVMainCount, nowTVStepCount, nowTVHoldCount;
+    static ImageView nowIVGo, nowIVRun, nowIVStop;
+    static CardView nowCard;
+    static int [] soundTable, soundTime;
+    static String [] soundText;
+    static GxInfo gxInfo;
+    static Shouter shouter = new Shouter();
 
 }

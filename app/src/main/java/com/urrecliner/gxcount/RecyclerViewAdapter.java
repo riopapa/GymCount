@@ -2,15 +2,8 @@ package com.urrecliner.gxcount;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -27,27 +20,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.urrecliner.gxcount.Vars.cdtRunning;
-import static com.urrecliner.gxcount.Vars.countDownTimer;
 import static com.urrecliner.gxcount.Vars.currIdx;
+import static com.urrecliner.gxcount.Vars.gxInfo;
 import static com.urrecliner.gxcount.Vars.gxInfos;
 import static com.urrecliner.gxcount.Vars.mActivity;
 import static com.urrecliner.gxcount.Vars.mContext;
-import static com.urrecliner.gxcount.Vars.sndShortTbl;
-import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
-import static com.urrecliner.gxcount.Vars.sndTbl;
-import static com.urrecliner.gxcount.Vars.sndTenTbl;
+import static com.urrecliner.gxcount.Vars.nowCard;
+import static com.urrecliner.gxcount.Vars.nowIVGo;
+import static com.urrecliner.gxcount.Vars.nowIVRun;
+import static com.urrecliner.gxcount.Vars.nowIVStop;
+import static com.urrecliner.gxcount.Vars.nowTVHoldCount;
+import static com.urrecliner.gxcount.Vars.nowTVMainCount;
+import static com.urrecliner.gxcount.Vars.nowTVStepCount;
+import static com.urrecliner.gxcount.Vars.shouter;
 import static com.urrecliner.gxcount.Vars.utils;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>  {
-
-    private static TextView nowTVMainCount, nowTVStepCount, nowTVHoldCount;
-    private static ImageView nowIVGo, nowIVRun, nowIVStop;
-    private static CardView nowCard;
-    private static MediaPlayer mediaPlayer;
-    private static String sReady = "<준비>";
-    private static String sStart = "<시작>";
-    private static String sHolding = "<버티기>";
-    private static String sNoMore = "<그만>";
 
     @Override
     public int getItemCount() {
@@ -64,17 +52,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private final static int SPEED_MIN = 20;
     private final static int STEP_MIN = 2;
-    private final static int HOLD_MIN = 10;
-    private final static String MAIN_PREFIX = "m";
-    private final static String STEP_PREFIX = "s";
-    private final static String HOLD_PREFIX = "h";
-
+    private final static int HOLD_MIN = 5;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private GxInfo gxInfo;
         TextView tvTypeName, tvMainCount, tvStepCount, tvSpeed, tvHoldCount;
-        ImageView ivHold, ivUpDown, ivStep, ivStart, ivReady, ivGo, ivRun, ivStop, ivDelete;
+        ImageView ivHold, ivCountUp, ivStep, ivStart, ivReady, ivGo, ivRun, ivStop, ivDelete;
         int wheelResult = 0;
 
         ViewHolder(final View itemView) {
@@ -88,7 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivHold = itemView.findViewById(R.id.hold);
             tvHoldCount = itemView.findViewById(R.id.holdCount);
 
-            ivUpDown = itemView.findViewById(R.id.up_down);
+            ivCountUp = itemView.findViewById(R.id.up_down);
             ivStart = itemView.findViewById(R.id.start);
             ivReady = itemView.findViewById(R.id.ready);
             ivGo = itemView.findViewById(R.id.go);
@@ -185,7 +168,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 List <String> getSpeedTable() {
                     List<String> result = new ArrayList<>();
-                    for (int i = SPEED_MIN; i <= 90; i+= 5) result.add("" + i);
+                    for (int i = SPEED_MIN; i <= 120; i+= 5) result.add("" + i);
                     return result;
                 }
             });
@@ -274,7 +257,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
                     wV.setAdditionCenterMark("회");
-                    wV.selectIndex(gxInfo.getStepCount() - SPEED_MIN);
+                    wV.selectIndex(gxInfo.getStepCount()-STEP_MIN);
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
                         @Override
                         public void onWheelItemSelected(WheelView wheelView, int position) {
@@ -409,19 +392,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
 
-            ivUpDown.setOnClickListener(new View.OnClickListener() {
+            ivCountUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
                     gxInfo = gxInfos.get(currIdx);
-                    boolean tf = !gxInfo.isUp();
-                    gxInfo.setUp(tf);
+                    boolean tf = !gxInfo.isCountUp();
+                    gxInfo.setCountUp(tf);
                     gxInfos.set(currIdx, gxInfo);
                     utils.saveSharedPrefTables();
-                    ivUpDown.setImageResource((tf) ? R.mipmap.i_up_true:R.mipmap.i_up_false);
-                    ivUpDown.invalidate();
+                    ivCountUp.setImageResource((tf) ? R.mipmap.i_up_true:R.mipmap.i_up_false);
+                    ivCountUp.invalidate();
                 }
             });
 
@@ -460,8 +443,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivGo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (cdtRunning)
-                        return;
+                    cdtRunning = true;
                     currIdx = getAdapterPosition();
                     gxInfo = gxInfos.get(currIdx);
                     nowTVMainCount = itemView.findViewById(R.id.mainCount);
@@ -471,19 +453,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     nowIVRun = itemView.findViewById(R.id.run);
                     nowIVStop = itemView.findViewById(R.id.stop);
                     nowCard = itemView.findViewById(R.id.card_view);
-                    nowIVGo.setVisibility(View.GONE);
-                    nowIVRun.setVisibility(View.VISIBLE);
-                    nowIVStop.setVisibility(View.VISIBLE);
-                    nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext,R.color.cardRun));
-                    nowCard.invalidate();
-                    calcDelayTime();
-                    setupSoundTable();
-                    sNow = 0;
-                    cdtRunning = true;
-                    int cdtDownTime = (soundText.length+2) * delayTime;
-                    utils.log("x","cdtDownTime "+cdtDownTime);
-                    runCountDownTimer(cdtDownTime);
-                    }
+                    shouter.start();
+                }
             });
 
             ivStop.setOnClickListener(new View.OnClickListener() {
@@ -491,7 +462,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 public void onClick(View view) {
                     currIdx = getAdapterPosition();
                     gxInfo = gxInfos.get(currIdx);
-                    finishHandler();
+                    shouter.stop();
                 }
             });
 
@@ -509,171 +480,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
         }
-
-        int display, upOrDown, delayTime, sIdx, sNow;
-        int [] soundTable;
-        String [] soundText;
-
-        void calcDelayTime() {
-            if (cdtRunning)
-                return;
-            gxInfo = gxInfos.get(currIdx);
-            upOrDown = gxInfo.isUp() ? 1:-1;
-            delayTime = 1000 * 60 / gxInfo.getSpeed();
-        }
-
-        private void runCountDownTimer(int cdtDownTime) {
-            nowIVGo.setEnabled(false);
-            countDownTimer = new CountDownTimer(cdtDownTime, delayTime) {
-                public void onTick(long millisUntilFinished) {
-                    if (soundText[sNow] != null) {
-                        display += upOrDown;
-                        Message msg = Message.obtain();
-                        msg.obj = soundText[sNow];
-                        displayCount.sendMessage(msg);
-                        utils.beepSound(soundTable[sNow], 1f);
-                        if (soundText[sNow].equals(sReady))
-                            SystemClock.sleep((2000));
-                        else if (soundText[sNow].equals(sStart))
-                            SystemClock.sleep((delayTime));
-                        sNow++;
-                        if (sNow == sIdx)
-                            finishHandler();
-                    }
-                }
-                public void onFinish() {
-                    finishHandler();
-                }
-            }.start();
-            nowIVGo.setEnabled(true);
-        }
-
-        private void setupSoundTable() {
-            int tblSize;
-            gxInfo = gxInfos.get(currIdx);
-            if (gxInfo.isStep())
-                tblSize = gxInfo.getStepCount() * gxInfo.getMainCount() + 6;
-            else
-                tblSize = gxInfo.getMainCount();
-            tblSize += ((gxInfo.isHold())? gxInfo.getHoldCount() : 0);
-            soundTable = new int[tblSize];
-            soundText = new String[tblSize];
-            sIdx = 0;
-            if (gxInfo.isSayReady()) {
-                soundTable[sIdx] = sndSpecialTbl[3];   // R.raw.i_ready
-                soundText[sIdx] = sReady;
-                sIdx++;
-            }
-            if (gxInfo.isSayStart()) {
-                soundTable[sIdx] = sndSpecialTbl[2];   // R.raw.i_start
-                soundText[sIdx] = sStart;
-                sIdx++;
-            }
-            if (gxInfo.isUp()) {
-                for (int i = 1; i < gxInfo.getMainCount(); i++) {
-                    if (gxInfo.isStep())
-                        addStepSound();
-                    int mod = i%10;
-                    if (mod == 0) {
-                        int j = i / 10;
-                        soundTable[sIdx] = sndTenTbl[j];
-                    }
-                    else {
-                        soundTable[sIdx] = sndTbl[mod];
-                    }
-                    soundText[sIdx] = MAIN_PREFIX + i;
-                    sIdx++;
-                }
-            }
-            else {
-                for (int i = gxInfo.getMainCount(); i > 0; i--) {
-                    if (gxInfo.isStep())
-                        addStepSound();
-                    int mod = i%10;
-                    if (mod == 0) {
-                        int j = i / 10;
-                        soundTable[sIdx] = sndTenTbl[j];
-                    }
-                    else {
-                        soundTable[sIdx] = sndTbl[mod];
-                    }
-                    soundText[sIdx] = MAIN_PREFIX + i;
-                    sIdx++;
-                }
-            }
-            if (gxInfo.isHold()) {
-                soundTable[sIdx] = sndSpecialTbl[0]; //R.raw.i_keep;
-                soundText[sIdx] = sHolding;
-                sIdx++;
-                for (int i = gxInfo.getHoldCount(); i >= 1; i--) {
-                    int mod = i%10;
-                    if (mod == 0) {
-                        int j = i / 10;
-                        soundTable[sIdx] = sndTenTbl[j];
-                    }
-                    else {
-                        soundTable[sIdx] = sndTbl[mod];
-                    }
-                    soundText[sIdx] = HOLD_PREFIX + i;
-                    sIdx++;
-                }
-            }
-            soundTable[sIdx] = sndSpecialTbl[1]; // R.raw.i_nomore;
-            soundText[sIdx] = sNoMore;
-            sIdx++;
-        }
-
-        private void addStepSound() {
-            for (int i = 1; i < gxInfo.getStepCount(); i++) {
-                int mod = i%10;
-                if (mod == 0) {
-                    int j = i / 10;
-                    soundTable[sIdx] = sndTenTbl[j];
-                }
-                else {
-                    soundTable[sIdx] = sndShortTbl[mod];
-                }
-                soundText[sIdx] = STEP_PREFIX + i;
-                sIdx++;
-            }
-        }
-    }
-
-    private static Handler displayCount = new Handler() {
-        public void handleMessage(Message msg) {
-            String cnt = msg.obj.toString().substring(1);
-            String tv = msg.obj.toString().substring(0,1);
-            switch (tv) {
-                case MAIN_PREFIX:
-                    nowTVMainCount.setText(cnt); break;
-                case STEP_PREFIX:
-                    nowTVStepCount.setText(cnt); break;
-                case HOLD_PREFIX:
-                    nowTVHoldCount.setText(cnt); break;
-            }
-        } };
-
-    private static void finishHandler() {
-        SystemClock.sleep(500);
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
-        if (cdtRunning) {
-            cdtRunning = false;
-            GxInfo gxInfo = gxInfos.get(currIdx);
-            nowIVGo.setVisibility(View.VISIBLE);
-            nowIVRun.setVisibility(View.GONE);
-            nowIVStop.setVisibility(View.GONE);
-            nowTVMainCount.setText(""+gxInfo.getMainCount());
-            nowTVStepCount.setText(""+gxInfo.getStepCount());
-            nowTVHoldCount.setText(""+gxInfo.getHoldCount());
-            nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
-        }
-    }
-
-    void stopHandler() {
-        finishHandler();
     }
 
     @Override
@@ -691,7 +497,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.ivHold.setImageResource((gxInfo.isHold()) ? R.mipmap.i_hold_true : R.mipmap.i_hold_false);
         s = (gxInfo.isHold()) ? ("" + gxInfo.getHoldCount()) : ""; holder.tvHoldCount.setText(s);
 
-        holder.ivUpDown.setImageResource(gxInfo.isUp() ? R.mipmap.i_up_true : R.mipmap.i_up_false);
+        holder.ivCountUp.setImageResource(gxInfo.isCountUp() ? R.mipmap.i_up_true : R.mipmap.i_up_false);
         holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.i_ready_true : R.mipmap.i_ready_false);
         holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.i_start_true : R.mipmap.i_start_false);
         GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivRun);

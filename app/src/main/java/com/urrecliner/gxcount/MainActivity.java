@@ -12,6 +12,7 @@ import static com.urrecliner.gxcount.Vars.gxInfos;
 import static com.urrecliner.gxcount.Vars.mActivity;
 import static com.urrecliner.gxcount.Vars.mContext;
 import static com.urrecliner.gxcount.Vars.recyclerView;
+import static com.urrecliner.gxcount.Vars.shouter;
 import static com.urrecliner.gxcount.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_stop) {
-            recyclerViewAdapter.stopHandler();
+            shouter.stop();
             return true;
         }
         if (item.getItemId() == R.id.action_add) {
