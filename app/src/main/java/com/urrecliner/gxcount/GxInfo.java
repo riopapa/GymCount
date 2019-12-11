@@ -25,6 +25,20 @@ public class GxInfo {
         this.sayReady = true;
     }
 
+    GxInfo(String typeName, int speed, int mainCount, boolean step, int stepCount, boolean hold, int holdCount,
+           boolean countUp, boolean sayStart, boolean sayReady) {
+        this.typeName = typeName;
+        this.speed = speed;
+        this.mainCount = mainCount;
+        this.step = step;
+        this.stepCount = stepCount;
+        this.hold = hold;
+        this.holdCount = holdCount;
+        this.countUp = countUp;
+        this.sayStart = sayStart;
+        this.sayReady = sayReady;
+    }
+
     String getTypeName() {
         return typeName;
     }

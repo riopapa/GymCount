@@ -1,7 +1,6 @@
 package com.urrecliner.gxcount;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +31,7 @@ import static com.urrecliner.gxcount.Vars.nowIVStop;
 import static com.urrecliner.gxcount.Vars.nowTVHoldCount;
 import static com.urrecliner.gxcount.Vars.nowTVMainCount;
 import static com.urrecliner.gxcount.Vars.nowTVStepCount;
+import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
 import static com.urrecliner.gxcount.Vars.shouter;
 import static com.urrecliner.gxcount.Vars.utils;
 
@@ -365,7 +365,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     gxInfo = gxInfos.get(currIdx);
                     boolean tf = !gxInfo.isStep();
                     gxInfo.setStep(tf);
-                    ivStep.setImageResource((tf) ? R.mipmap.i_step_true:R.mipmap.i_step_false);
+                    ivStep.setImageResource((tf) ? R.mipmap.icon_step_on:R.mipmap.icon_step_off);
                     ivStep.invalidate();
                     gxInfos.set(currIdx, gxInfo);
                     utils.saveSharedPrefTables();
@@ -385,7 +385,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     gxInfo.setHold(tf);
                     gxInfos.set(currIdx, gxInfo);
                     utils.saveSharedPrefTables();
-                    ivHold.setImageResource((tf) ? R.mipmap.i_hold_true:R.mipmap.i_hold_false);
+                    ivHold.setImageResource((tf) ? R.mipmap.icon_hold_on:R.mipmap.icon_hold_off);
                     ivHold.invalidate();
                     String s = (tf) ? (""+gxInfo.getHoldCount()) : "";
                     tvHoldCount.setText(s);
@@ -403,7 +403,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     gxInfo.setCountUp(tf);
                     gxInfos.set(currIdx, gxInfo);
                     utils.saveSharedPrefTables();
-                    ivCountUp.setImageResource((tf) ? R.mipmap.i_up_true:R.mipmap.i_up_false);
+                    ivCountUp.setImageResource((tf) ? R.mipmap.icon_up_on:R.mipmap.icon_up_off);
                     ivCountUp.invalidate();
                 }
             });
@@ -419,7 +419,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     gxInfo.setSayReady(tf);
                     gxInfos.set(currIdx, gxInfo);
                     utils.saveSharedPrefTables();
-                    ivReady.setImageResource((tf)? R.mipmap.i_ready_true:R.mipmap.i_ready_false);
+                    ivReady.setImageResource((tf)? R.mipmap.icon_ready_on:R.mipmap.icon_ready_off);
                     ivReady.invalidate();
                 }
             });
@@ -435,7 +435,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     gxInfo.setSayStart(tf);
                     gxInfos.set(currIdx, gxInfo);
                     utils.saveSharedPrefTables();
-                    ivStart.setImageResource((tf) ? R.mipmap.i_start_true:R.mipmap.i_start_false);
+                    ivStart.setImageResource((tf) ? R.mipmap.icon_start_on:R.mipmap.icon_start_off);
                     ivStart.invalidate();
                 }
             });
@@ -474,9 +474,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     currIdx = getAdapterPosition();
                     gxInfos.remove(currIdx);
                     utils.saveSharedPrefTables();
-                    Intent intent = new Intent(mContext, MainActivity.class);
-                    mActivity.startActivity(intent);
-
+                    recyclerViewAdapter.notifyItemRemoved(currIdx);
                 }
             });
         }
@@ -491,15 +489,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         s = "" + gxInfo.getMainCount(); holder.tvMainCount.setText(s);
         s = "" + gxInfo.getSpeed();     holder.tvSpeed.setText(s);
 
-        holder.ivStep.setImageResource((gxInfo.isStep()) ? R.mipmap.i_step_true : R.mipmap.i_step_false);
+        holder.ivStep.setImageResource((gxInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
         s = (gxInfo.isStep()) ? ("" + gxInfo.getStepCount()) : ""; holder.tvStepCount.setText(s);
 
-        holder.ivHold.setImageResource((gxInfo.isHold()) ? R.mipmap.i_hold_true : R.mipmap.i_hold_false);
+        holder.ivHold.setImageResource((gxInfo.isHold()) ? R.mipmap.icon_hold_on : R.mipmap.icon_hold_off);
         s = (gxInfo.isHold()) ? ("" + gxInfo.getHoldCount()) : ""; holder.tvHoldCount.setText(s);
 
-        holder.ivCountUp.setImageResource(gxInfo.isCountUp() ? R.mipmap.i_up_true : R.mipmap.i_up_false);
-        holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.i_ready_true : R.mipmap.i_ready_false);
-        holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.i_start_true : R.mipmap.i_start_false);
+        holder.ivCountUp.setImageResource(gxInfo.isCountUp() ? R.mipmap.icon_up_on : R.mipmap.icon_up_off);
+        holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
+        holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
         GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivRun);
 //        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
         Glide.with(mActivity).load(R.drawable.running_gifmaker).into(gifImage);

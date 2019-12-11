@@ -97,6 +97,9 @@ class Utils {
         }
     }
 
+    void refreshScreen (RecyclerViewAdapter recyclerViewAdapter, int idx) {
+        recyclerViewAdapter.notifyItemRemoved(idx);
+    }
 
     void saveSharedPrefTables() {
 
