@@ -2,11 +2,13 @@ package com.urrecliner.gxcount;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,6 +20,7 @@ import static com.urrecliner.gxcount.Vars.mContext;
 import static com.urrecliner.gxcount.Vars.recyclerView;
 import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
 import static com.urrecliner.gxcount.Vars.shouter;
+import static com.urrecliner.gxcount.Vars.sizeX;
 import static com.urrecliner.gxcount.Vars.spanCount;
 import static com.urrecliner.gxcount.Vars.utils;
 
@@ -41,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
         gxInfos = utils.readSharedPrefTables();
         if (gxInfos.size() == 0)
             gxInfos = new MakeGxInfos().getGxArray();
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        sizeX = size.x;
 
         prepareCards();
         utils.log(logId,"Ready");

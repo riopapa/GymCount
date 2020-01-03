@@ -227,20 +227,8 @@ class Shouter {
     private static void finishHandler() {
         cdtRunning = false;
         SystemClock.sleep(500);
-//        String s;
-//        GxInfo gxInfo = gxInfos.get(currIdx);
+        nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
         recyclerViewAdapter.notifyItemChanged(currIdx);
-//        nowIVGo.setVisibility(View.VISIBLE);
-//        nowIVRun.setVisibility(View.GONE);
-//        nowIVStop.setVisibility(View.GONE);
-//        s = "" + gxInfo.getMainCount();
-//        nowTVMainCount.setText(s);
-//        s = "" + gxInfo.getStepCount();
-//        nowTVStepCount.setText(s);
-//        s = "" + gxInfo.getHoldCount();
-//        nowTVHoldCount.setText(s);
-//        nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
-//        nowIVGo.setEnabled(true);
     }
 
 }

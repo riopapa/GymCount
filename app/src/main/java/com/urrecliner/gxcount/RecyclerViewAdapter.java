@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,8 @@ import static com.urrecliner.gxcount.Vars.nowTVMainCount;
 import static com.urrecliner.gxcount.Vars.nowTVStepCount;
 import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
 import static com.urrecliner.gxcount.Vars.shouter;
+import static com.urrecliner.gxcount.Vars.sizeX;
+import static com.urrecliner.gxcount.Vars.spanCount;
 import static com.urrecliner.gxcount.Vars.utils;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>  {
@@ -59,7 +62,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTypeName, tvMainCount, tvStepCount, tvSpeed, tvHoldCount;
+        TextView tvTypeName, tvSpeed, tvSpeedTxt, tvMainCount, tvMainCountTxt, tvStepCount, tvHoldCount;
         ImageView ivHold, ivCountUpDown, ivStep, ivStart, ivReady, ivShout, ivRun, ivStop, ivDelete;
         int wheelResult = 0;
 
@@ -68,12 +71,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             tvTypeName = itemView.findViewById(R.id.typeName);
             tvSpeed = itemView.findViewById(R.id.speed);
+            tvSpeedTxt = itemView.findViewById(R.id.speedTxt);
             tvMainCount = itemView.findViewById(R.id.mainCount);
+            tvMainCountTxt = itemView.findViewById(R.id.mainCountTxt);
             ivStep = itemView.findViewById(R.id.step);
             tvStepCount = itemView.findViewById(R.id.stepCount);
             ivHold = itemView.findViewById(R.id.hold);
             tvHoldCount = itemView.findViewById(R.id.holdCount);
-
             ivCountUpDown = itemView.findViewById(R.id.up_down);
             ivStart = itemView.findViewById(R.id.start);
             ivReady = itemView.findViewById(R.id.ready);
@@ -490,25 +494,65 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int pos) {
 
         String s;
+        LinearLayout.LayoutParams lpL, lpR;
         GxInfo gxInfo = gxInfos.get(pos);
+        int textSize = (spanCount == 2) ? 20:16;
+        lpL = (LinearLayout.LayoutParams) holder.tvTypeName.getLayoutParams();
+        lpL.height = textSize * 60 / 10;
+        lpL.weight = 7;    // no change
         holder.tvTypeName.setText(gxInfo.getTypeName());
-        s = "" + gxInfo.getMainCount(); holder.tvMainCount.setText(s);
-        s = "" + gxInfo.getSpeed();     holder.tvSpeed.setText(s);
+        holder.tvTypeName.setTextSize(textSize);
+        holder.tvTypeName.setLayoutParams(lpL);
 
+        lpL = (LinearLayout.LayoutParams) holder.tvSpeedTxt.getLayoutParams();
+        lpR = (LinearLayout.LayoutParams) holder.tvSpeed.getLayoutParams();
+        lpL.height = textSize * 60 / 10;
+        lpR.height = textSize * 60 / 10;
+        lpL.weight = 6;
+        lpR.weight = 4;
+        holder.tvSpeedTxt.setLayoutParams(lpL);
+        holder.tvSpeedTxt.setTextSize(textSize);
+        holder.tvSpeed.setLayoutParams(lpR);
+        holder.tvSpeed.setTextSize(textSize);
+        s = "" + gxInfo.getSpeed(); holder.tvSpeed.setText(s);
+
+        holder.tvMainCountTxt.setLayoutParams(lpL);
+        holder.tvMainCountTxt.setTextSize(textSize);
+        holder.tvMainCount.setLayoutParams(lpR);
+        holder.tvMainCount.setTextSize(textSize);
+        s = "" + gxInfo.getMainCount(); holder.tvMainCount.setText(s);
+
+        holder.ivStep.setLayoutParams(lpL);
         holder.ivStep.setImageResource((gxInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
+
+        holder.tvStepCount.setLayoutParams(lpR);
+        holder.tvStepCount.setTextSize(textSize);
         s = (gxInfo.isStep()) ? ("" + gxInfo.getStepCount()) : ""; holder.tvStepCount.setText(s);
 
+        holder.ivHold.setLayoutParams(lpL);
         holder.ivHold.setImageResource((gxInfo.isHold()) ? R.mipmap.icon_hold_on : R.mipmap.icon_hold_off);
+        holder.tvHoldCount.setLayoutParams(lpR);
+        holder.tvHoldCount.setTextSize(textSize);
         s = (gxInfo.isHold()) ? ("" + gxInfo.getHoldCount()) : ""; holder.tvHoldCount.setText(s);
 
+        lpR.width = sizeX / spanCount / 3;
+        holder.ivCountUpDown.setLayoutParams(lpR);
         holder.ivCountUpDown.setImageResource(countUpDowns[gxInfo.getCountUpDown()]);
+
+        holder.ivReady.setLayoutParams(lpR);
         holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
+
+        holder.ivStart.setLayoutParams(lpR);
         holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
-        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivRun);
-//        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
-        Glide.with(mActivity).load(R.drawable.running_gifmaker).into(gifImage);
+
+        lpR.width = sizeX / spanCount / 2;
+//        holder.ivShout.setLayoutParams(lpR);
         holder.ivShout.setVisibility(View.VISIBLE);
+        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivRun);
+        Glide.with(mActivity).load(R.drawable.running_gifmaker).into(gifImage);
+//        holder.ivRun.setLayoutParams(lpR);
         holder.ivRun.setVisibility(View.GONE);
+//        holder.ivStop.setLayoutParams(lpR);
         holder.ivStop.setVisibility(View.GONE);
     }
 }
