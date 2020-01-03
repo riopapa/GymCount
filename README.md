@@ -3,9 +3,11 @@
 
 - You can set various gym style (currently 6 cases) 
 - Following are settable
-  - Counting Up or Down, Number of Count
-  - Sub count or Keep Staying
-  - Speed for counting
+  - Speed
+  - Counts
+  - Step count
+  - Keep Staying after main count
+  - Counting Up or Down
   - Say Ready or not, Say Start or not
     
 <H1>Screenshots and How to operate</H1>
