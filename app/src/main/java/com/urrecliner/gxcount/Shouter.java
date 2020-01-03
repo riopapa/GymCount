@@ -17,6 +17,7 @@ import static com.urrecliner.gxcount.Vars.nowIVStop;
 import static com.urrecliner.gxcount.Vars.nowTVHoldCount;
 import static com.urrecliner.gxcount.Vars.nowTVMainCount;
 import static com.urrecliner.gxcount.Vars.nowTVStepCount;
+import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
 import static com.urrecliner.gxcount.Vars.sndShortTbl;
 import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
 import static com.urrecliner.gxcount.Vars.sndTbl;
@@ -76,9 +77,11 @@ class Shouter {
             soundTime[sIdx] = delayTime + delayTime;
             sIdx++;
         }
+
         countUpDown = gxInfo.getCountUpDown();
-        if ( countUpDown == 0 || countUpDown == 2) {
+        if ( countUpDown == 0 || countUpDown == 2) {    // count up
             int max = gxInfo.getMainCount() + (gxInfo.isStep() ? 1:0);
+            utils.log("count","tblsize "+tblSize+" , count "+gxInfo.getMainCount()+", countUpDown "+countUpDown+" max "+max);
             for (int i = 1; i < max; i++) {
                 if (gxInfo.isStep())
                     addStepSound(gxInfo.getStepCount());
@@ -91,7 +94,7 @@ class Shouter {
                         int j = i / 10;
                         soundTable[sIdx] = (countUpDown == 0) ? sndTenTbl[j]: sndTbl[0];
                     } else {
-                        soundTable[sIdx] = (countUpDown == 0) ? sndTbl[mod]: sndTbl[0];
+                        soundTable[sIdx] = (countUpDown == 0 || i >= (max-5)) ? sndTbl[mod]: sndTbl[0];
                     }
                 }
                 soundText[sIdx] = MAIN_PREFIX + i;
@@ -224,19 +227,20 @@ class Shouter {
     private static void finishHandler() {
         cdtRunning = false;
         SystemClock.sleep(500);
-        String s;
-        GxInfo gxInfo = gxInfos.get(currIdx);
-        nowIVGo.setVisibility(View.VISIBLE);
-        nowIVRun.setVisibility(View.GONE);
-        nowIVStop.setVisibility(View.GONE);
-        s = "" + gxInfo.getMainCount();
-        nowTVMainCount.setText(s);
-        s = "" + gxInfo.getStepCount();
-        nowTVStepCount.setText(s);
-        s = "" + gxInfo.getHoldCount();
-        nowTVHoldCount.setText(s);
-        nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
-        nowIVGo.setEnabled(true);
+//        String s;
+//        GxInfo gxInfo = gxInfos.get(currIdx);
+        recyclerViewAdapter.notifyItemChanged(currIdx);
+//        nowIVGo.setVisibility(View.VISIBLE);
+//        nowIVRun.setVisibility(View.GONE);
+//        nowIVStop.setVisibility(View.GONE);
+//        s = "" + gxInfo.getMainCount();
+//        nowTVMainCount.setText(s);
+//        s = "" + gxInfo.getStepCount();
+//        nowTVStepCount.setText(s);
+//        s = "" + gxInfo.getHoldCount();
+//        nowTVHoldCount.setText(s);
+//        nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
+//        nowIVGo.setEnabled(true);
     }
 
 }

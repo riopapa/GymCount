@@ -4,6 +4,14 @@
     tools:context="com.urrecliner.healtycount.MainActivity">
 
     <item
+        android:id="@+id/action_TwoThree"
+        android:orderInCategory="100"
+        android:title="2/3"
+        android:icon="@mipmap/icon_three"
+        app:showAsAction="always" />
+
+
+    <item
         android:id="@+id/action_stop"
         android:orderInCategory="100"
         android:title="Stop"

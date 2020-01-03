@@ -3,7 +3,7 @@
     package="com.urrecliner.gxcount">
 
     <application
-        android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/app_gx_count"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_gx_count"

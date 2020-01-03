@@ -44,6 +44,6 @@
         android:layout_height="wrap_content"
         android:background="@color/wheelBack"
         app:lwvAdditionalCenterMark="회"
-        app:lwvHighlightColor="@color/White" />
+        app:lwvHighlightColor="#FFFFFF" />
 
 </LinearLayout>

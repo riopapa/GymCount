@@ -27,10 +27,11 @@ class Vars {
     static Utils utils;
     static int currIdx;
     static boolean cdtRunning;
+    static int spanCount;
 
     static int[] soundSource = {    // 1 ~ 19
             R.raw.s_00, R.raw.s_01, R.raw.s_02, R.raw.s_03, R.raw.s_04, R.raw.s_05, R.raw.s_06, R.raw.s_07, R.raw.s_08, R.raw.s_09,
-                R.raw.s_10, R.raw.s_11, R.raw.s_12, R.raw.s_13, R.raw.s_14, R.raw.s_15, R.raw.s_16, R.raw.s_17, R.raw.s_18, R.raw.s_19};
+                R.raw.s_10, R.raw.s_11, R.raw.s_12, R.raw.s_13, R.raw.s_14, R.raw.s_15, R.raw.s_16, R.raw.s_17, R.raw.s_18, R.raw.s_19, R.raw.s_20};
     static int[] soundTenSource = { // 10 ~ 80
             0, R.raw.s_10, R.raw.s_20, R.raw.s_30, R.raw.s_40, R.raw.s_50, R.raw.s_60, R.raw.s_70, R.raw.s_80};
     static int[] soundStep = {

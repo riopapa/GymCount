@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -52,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static TextView tvNowSpeed, tvNowMainCount, tvNowStepCount, tvNowHoldCount;
 
     private final static int SPEED_MIN = 20, SPEED_MAX = 90;
-    private final static int COUNT_MIN = 4, COUNT_MID = 20, COUNT_MAX = 120;
+    private final static int COUNT_MIN = 4, COUNT_MID = 20, COUNT_MAX = 85;
     private final static int STEP_MIN = 2, STEP_MAX = 12;
     private final static int HOLD_MIN = 5, HOLD_MAX = 30;
 
@@ -408,6 +409,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     utils.saveSharedPrefTables();
                     ivCountUpDown.setImageResource(countUpDowns[count]);
                     ivCountUpDown.invalidate();
+                    if (count > 1 && gxInfo.isStep())
+                        Toast.makeText(mContext, "Count Up/Down 5 와 Step 을 같이 쓴다고? ",Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -492,7 +495,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         s = "" + gxInfo.getMainCount(); holder.tvMainCount.setText(s);
         s = "" + gxInfo.getSpeed();     holder.tvSpeed.setText(s);
 
-        holder.ivCountUpDown.setImageResource((gxInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
+        holder.ivStep.setImageResource((gxInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
         s = (gxInfo.isStep()) ? ("" + gxInfo.getStepCount()) : ""; holder.tvStepCount.setText(s);
 
         holder.ivHold.setImageResource((gxInfo.isHold()) ? R.mipmap.icon_hold_on : R.mipmap.icon_hold_off);
