@@ -40,6 +40,8 @@
 
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="./app/screenshots/MainActivity.jpg" width=400 height=800>
+<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="./app/screenshots/MainActivity3.jpg" width=400 height=800>
 
 <H3>Adjust Count /Sub Count</H3>
 
