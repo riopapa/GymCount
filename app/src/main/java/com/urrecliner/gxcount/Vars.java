@@ -28,17 +28,17 @@ class Vars {
     static int currIdx;
     static boolean cdtRunning;
 
-    static int[] soundSource = {
-            0, R.raw.n01, R.raw.n02, R.raw.n03, R.raw.n04, R.raw.n05, R.raw.n06, R.raw.n07, R.raw.n08, R.raw.n09};
-    static int[] soundTenSource = {
-            0, R.raw.n_10, R.raw.n_20, R.raw.n_30, R.raw.n_40, R.raw.n_50, R.raw.n_60};
-
-//    static int[] soundShort = {
-//            0, R.raw.n_s1, R.raw.n_s2, R.raw.n_s3, R.raw.n_s4, R.raw.n_s5, R.raw.n_s6, R.raw.n_s7, R.raw.n_s8, R.raw.n_s9};
-    static int[] soundShort = {
-            0, R.raw.e_1, R.raw.e_2, R.raw.e_3, R.raw.e_4, R.raw.e_5, R.raw.e_6, R.raw.e_7, R.raw.e_8, R.raw.e_9};
+    static int[] soundSource = {    // 1 ~ 19
+            R.raw.s_00, R.raw.s_01, R.raw.s_02, R.raw.s_03, R.raw.s_04, R.raw.s_05, R.raw.s_06, R.raw.s_07, R.raw.s_08, R.raw.s_09,
+                R.raw.s_10, R.raw.s_11, R.raw.s_12, R.raw.s_13, R.raw.s_14, R.raw.s_15, R.raw.s_16, R.raw.s_17, R.raw.s_18, R.raw.s_19};
+    static int[] soundTenSource = { // 10 ~ 80
+            0, R.raw.s_10, R.raw.s_20, R.raw.s_30, R.raw.s_40, R.raw.s_50, R.raw.s_60, R.raw.s_70, R.raw.s_80};
+    static int[] soundStep = {
+            0, R.raw.e_01, R.raw.e_02, R.raw.e_03, R.raw.e_04, R.raw.e_05, R.raw.e_06, R.raw.e_07, R.raw.e_08, R.raw.e_09,
+                R.raw.e_10, R.raw.e_11, R.raw.e_12, R.raw.e_13};
                                     // 0            1               2           3               4
     static int[] soundSpecial = { R.raw.i_keep, R.raw.i_nomore, R.raw.i_start, R.raw.i_ready, R.raw.i_last};
+    static int [] countUpDowns = {R.mipmap.icon_count_up, R.mipmap.icon_count_down, R.mipmap.icon_count_up5, R.mipmap.icon_count_down5};
 
     static int[] sndTbl, sndTenTbl, sndShortTbl, sndSpecialTbl;
 

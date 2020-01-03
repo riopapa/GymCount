@@ -53,6 +53,7 @@ class Shouter {
 
     private void setupSoundTable() {
         int tblSize;
+        int countUpDown;
         gxInfo = gxInfos.get(currIdx);
         if (gxInfo.isStep())
             tblSize = (gxInfo.getStepCount()+1) * gxInfo.getMainCount();
@@ -72,21 +73,26 @@ class Shouter {
         if (gxInfo.isSayStart()) {
             soundTable[sIdx] = sndSpecialTbl[2];   // R.raw.i_start
             soundText[sIdx] = NONE_PREFIX;
-            soundTime[sIdx] = delayTime;
+            soundTime[sIdx] = delayTime + delayTime;
             sIdx++;
         }
-        if (gxInfo.isCountUp()) {
+        countUpDown = gxInfo.getCountUpDown();
+        if ( countUpDown == 0 || countUpDown == 2) {
             int max = gxInfo.getMainCount() + (gxInfo.isStep() ? 1:0);
             for (int i = 1; i < max; i++) {
                 if (gxInfo.isStep())
                     addStepSound(gxInfo.getStepCount());
-                int mod = i%10;
-                if (mod == 0) {
-                    int j = i / 10;
-                    soundTable[sIdx] = sndTenTbl[j];
+                if (i < 21) {
+                    soundTable[sIdx] = (countUpDown == 0 || i >= (max-5)) ? sndTbl[i]: sndTbl[0];
                 }
                 else {
-                    soundTable[sIdx] = sndTbl[mod];
+                    int mod = i % 10;
+                    if (mod == 0) {
+                        int j = i / 10;
+                        soundTable[sIdx] = (countUpDown == 0) ? sndTenTbl[j]: sndTbl[0];
+                    } else {
+                        soundTable[sIdx] = (countUpDown == 0) ? sndTbl[mod]: sndTbl[0];
+                    }
                 }
                 soundText[sIdx] = MAIN_PREFIX + i;
                 soundTime[sIdx] = delayTime;
@@ -94,18 +100,20 @@ class Shouter {
             }
         }
         else {
-//            int min = (gxInfo.isStep() ? 1:0);
-            int min = 0;
-            for (int i = gxInfo.getMainCount(); i > min; i--) {
+            for (int i = gxInfo.getMainCount(); i > 0; i--) {
                 if (gxInfo.isStep())
                     addStepSound(gxInfo.getStepCount());
-                int mod = i%10;
-                if (mod == 0) {
-                    int j = i / 10;
-                    soundTable[sIdx] = sndTenTbl[j];
+                if (i < 21) {
+                    soundTable[sIdx] = (countUpDown == 1 || i <= 5) ? sndTbl[i]: sndTbl[0];
                 }
                 else {
-                    soundTable[sIdx] = sndTbl[mod];
+                    int mod = i % 10;
+                    if (mod == 0) {
+                        int j = i / 10;
+                        soundTable[sIdx] = (countUpDown == 1) ? sndTenTbl[j]:sndTbl[0];
+                    } else {
+                        soundTable[sIdx] = (countUpDown == 1) ? sndTbl[mod]:sndTbl[0];
+                    }
                 }
                 soundText[sIdx] = MAIN_PREFIX + i;
                 soundTime[sIdx] = delayTime;
@@ -141,14 +149,7 @@ class Shouter {
 
     private void addStepSound(int maxi) {
         for (int i = 1; i < maxi; i++) {
-            int mod = i%10;
-            if (mod == 0) {
-                int j = i / 10;
-                soundTable[sIdx] = sndTenTbl[j];
-            }
-            else {
-                soundTable[sIdx] = sndShortTbl[mod];
-            }
+            soundTable[sIdx] = sndShortTbl[i];
             soundText[sIdx] = STEP_PREFIX + i;
             soundTime[sIdx] = delayTime;
             sIdx++;

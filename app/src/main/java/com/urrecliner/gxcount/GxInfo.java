@@ -5,11 +5,11 @@ public class GxInfo {
     private String typeName;
     private int speed;
     private int mainCount;
-    private boolean step;
+    private boolean step;     // 0: up, 1: down, 2: up5, 3:down5
     private int stepCount;
     private boolean hold;
     private int holdCount;
-    private boolean countUp;
+    private int countUpDown;
     private boolean sayStart;
     private boolean sayReady;
 
@@ -20,13 +20,13 @@ public class GxInfo {
         this.stepCount = 4;
         this.hold = false;
         this.holdCount = 10;
-        this.countUp = true;
+        this.countUpDown = 0;
         this.sayStart = true;
         this.sayReady = true;
     }
 
     GxInfo(String typeName, int speed, int mainCount, boolean step, int stepCount, boolean hold, int holdCount,
-           boolean countUp, boolean sayStart, boolean sayReady) {
+           int countUpDown, boolean sayStart, boolean sayReady) {
         this.typeName = typeName;
         this.speed = speed;
         this.mainCount = mainCount;
@@ -34,7 +34,7 @@ public class GxInfo {
         this.stepCount = stepCount;
         this.hold = hold;
         this.holdCount = holdCount;
-        this.countUp = countUp;
+        this.countUpDown = countUpDown;
         this.sayStart = sayStart;
         this.sayReady = sayReady;
     }
@@ -42,7 +42,6 @@ public class GxInfo {
     String getTypeName() {
         return typeName;
     }
-
      void setTypeName(String typeName) {
         this.typeName = typeName;
     }
@@ -50,7 +49,6 @@ public class GxInfo {
      int getSpeed() {
         return speed;
     }
-
      void setSpeed(int speed) {
         this.speed = speed;
     }
@@ -58,7 +56,6 @@ public class GxInfo {
      int getMainCount() {
         return mainCount;
     }
-
      void setMainCount(int mainCount) {
         this.mainCount = mainCount;
     }
@@ -66,7 +63,6 @@ public class GxInfo {
      boolean isStep() {
         return step;
     }
-
      void setStep(boolean step) {
         this.step = step;
     }
@@ -74,7 +70,6 @@ public class GxInfo {
      int getStepCount() {
         return stepCount;
     }
-
      void setStepCount(int stepCount) {
         this.stepCount = stepCount;
     }
@@ -82,7 +77,6 @@ public class GxInfo {
      boolean isHold() {
         return hold;
     }
-
      void setHold(boolean hold) {
         this.hold = hold;
     }
@@ -90,23 +84,20 @@ public class GxInfo {
      int getHoldCount() {
         return holdCount;
     }
-
      void setHoldCount(int holdCount) {
         this.holdCount = holdCount;
     }
 
-     boolean isCountUp() {
-        return countUp;
+     int getCountUpDown() {
+        return countUpDown;
     }
-
-     void setCountUp(boolean countUp) {
-        this.countUp = countUp;
+     void setCountUpDown(int countUpDown) {
+        this.countUpDown = countUpDown;
     }
 
      boolean isSayStart() {
         return sayStart;
     }
-
      void setSayStart(boolean sayStart) {
         this.sayStart = sayStart;
     }
@@ -114,7 +105,6 @@ public class GxInfo {
      boolean isSayReady() {
         return sayReady;
     }
-
      void setSayReady(boolean sayReady) {
         this.sayReady = sayReady;
     }

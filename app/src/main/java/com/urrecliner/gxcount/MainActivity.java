@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             gxInfos = new MakeGxInfos().getGxArray();
 
         recyclerView = findViewById(R.id.recyclerView);
-        StaggeredGridLayoutManager SGL = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager SGL = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(SGL);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, SGL.getOrientation()));
         recyclerView.setLayoutManager(SGL);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         for (int i = 0; i < gxInfoArrayList.size(); i++) {
-            menu.addSubMenu(0, MENU_GXDEFAULT + i, Menu.NONE, "Add "+gxInfoArrayList.get(i).getTypeName());
+            menu.add(0, MENU_GXDEFAULT + i, Menu.NONE, "Add "+gxInfoArrayList.get(i).getTypeName());
         }
         menu.addSubMenu(0, MENU_GXDEFAULT + gxInfoArrayList.size(), Menu.NONE, "RESET ALL");
 

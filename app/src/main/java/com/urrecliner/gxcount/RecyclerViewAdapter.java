@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.urrecliner.gxcount.Vars.cdtRunning;
+import static com.urrecliner.gxcount.Vars.countUpDowns;
 import static com.urrecliner.gxcount.Vars.currIdx;
 import static com.urrecliner.gxcount.Vars.gxInfo;
 import static com.urrecliner.gxcount.Vars.gxInfos;
@@ -50,14 +51,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private static TextView tvNowSpeed, tvNowMainCount, tvNowStepCount, tvNowHoldCount;
 
-    private final static int SPEED_MIN = 20;
-    private final static int STEP_MIN = 2;
-    private final static int HOLD_MIN = 5;
+    private final static int SPEED_MIN = 20, SPEED_MAX = 90;
+    private final static int COUNT_MIN = 4, COUNT_MID = 20, COUNT_MAX = 120;
+    private final static int STEP_MIN = 2, STEP_MAX = 12;
+    private final static int HOLD_MIN = 5, HOLD_MAX = 30;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvTypeName, tvMainCount, tvStepCount, tvSpeed, tvHoldCount;
-        ImageView ivHold, ivCountUp, ivStep, ivStart, ivReady, ivGo, ivRun, ivStop, ivDelete;
+        ImageView ivHold, ivCountUpDown, ivStep, ivStart, ivReady, ivShout, ivRun, ivStop, ivDelete;
         int wheelResult = 0;
 
         ViewHolder(final View itemView) {
@@ -71,10 +73,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivHold = itemView.findViewById(R.id.hold);
             tvHoldCount = itemView.findViewById(R.id.holdCount);
 
-            ivCountUp = itemView.findViewById(R.id.up_down);
+            ivCountUpDown = itemView.findViewById(R.id.up_down);
             ivStart = itemView.findViewById(R.id.start);
             ivReady = itemView.findViewById(R.id.ready);
-            ivGo = itemView.findViewById(R.id.go);
+            ivShout = itemView.findViewById(R.id.shout);
             ivRun = itemView.findViewById(R.id.run);
             ivRun.setVisibility(View.GONE);
             ivStop = itemView.findViewById(R.id.stop);
@@ -168,7 +170,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 List <String> getSpeedTable() {
                     List<String> result = new ArrayList<>();
-                    for (int i = SPEED_MIN; i <= 120; i+= 5) result.add("" + i);
+                    for (int i = SPEED_MIN; i <= SPEED_MAX; i+= 5) result.add("" + i);
                     return result;
                 }
             });
@@ -194,8 +196,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
                     wV.setAdditionCenterMark("회");
-                    int val = gxInfo.getMainCount();
-                    wV.selectIndex((val > SPEED_MIN) ? SPEED_MIN + (val - SPEED_MIN) / 5 : val);    // index pointer
+                    String val = ""+gxInfo.getMainCount();
+                    int idx = 0;
+                    for (; idx < wheelValues.size(); idx++) {
+                        if (wheelValues.get(idx).equals(val))
+                            break;
+                    }
+                    wV.selectIndex(idx);    // index pointer
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
                         @Override
                         public void onWheelItemSelected(WheelView wheelView, int position) {
@@ -210,13 +217,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if (wheelResult > SPEED_MIN)
-                                        wheelResult = SPEED_MIN + (wheelResult - SPEED_MIN) * 5;
-                                    String s;
-                                    gxInfo.setMainCount(wheelResult);
+                                    String s = wheelValues.get(wheelResult);
+                                    gxInfo.setMainCount(Integer.parseInt(s));
                                     gxInfos.set(currIdx, gxInfo);
                                     utils.saveSharedPrefTables();
-                                    s = ""+wheelResult;
                                     tvNowMainCount.setText(s);
                                     tvNowMainCount.invalidate();
                                 }
@@ -230,8 +234,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 List <String> setCountTable() {
                     List<String> result = new ArrayList<>();
-                        for (int i = 0; i < SPEED_MIN; i++) result.add("" + i);
-                        for (int i = 0; i < 9 ; i++) result.add(""+(SPEED_MIN + i * 5));
+                        for (int i = COUNT_MIN; i <= COUNT_MID; i++) result.add("" + i);
+                        for (int i = 1; i < COUNT_MAX/5 ; i++) result.add(""+(COUNT_MID + i * 5));
                     return result;
                 }
             });
@@ -272,11 +276,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    String s;
+                                    String s = ""+gxInfo.getStepCount();
                                     gxInfo.setStepCount(wheelResult+STEP_MIN);
                                     gxInfos.set(currIdx, gxInfo);
                                     utils.saveSharedPrefTables();
-                                    s = ""+gxInfo.getStepCount();
                                     tvNowStepCount.setText(s);
                                     tvNowStepCount.invalidate();
                                 }
@@ -291,7 +294,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 List <String> setCountTable() {
 
                     List<String> result = new ArrayList<>();
-                    for (int i = STEP_MIN; i <= 16; i++) result.add("" + i);
+                    for (int i = STEP_MIN; i <= STEP_MAX; i++) result.add("" + i);
                     return result;
                 }
             });
@@ -351,7 +354,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 List <String> setCountTable() {
 
                     List<String> result = new ArrayList<>();
-                    for (int i = HOLD_MIN; i <= 20; i++) result.add("" + i);
+                    for (int i = HOLD_MIN; i <= HOLD_MAX; i++) result.add("" + i);
                     return result;
                 }
             });
@@ -392,19 +395,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
 
-            ivCountUp.setOnClickListener(new View.OnClickListener() {
+            ivCountUpDown.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
                     gxInfo = gxInfos.get(currIdx);
-                    boolean tf = !gxInfo.isCountUp();
-                    gxInfo.setCountUp(tf);
+                    int count = (gxInfo.getCountUpDown() + 1) % 4;
+                    gxInfo.setCountUpDown(count);
                     gxInfos.set(currIdx, gxInfo);
                     utils.saveSharedPrefTables();
-                    ivCountUp.setImageResource((tf) ? R.mipmap.icon_up_on:R.mipmap.icon_up_off);
-                    ivCountUp.invalidate();
+                    ivCountUpDown.setImageResource(countUpDowns[count]);
+                    ivCountUpDown.invalidate();
                 }
             });
 
@@ -440,7 +443,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
 
-            ivGo.setOnClickListener(new View.OnClickListener() {
+            ivShout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     cdtRunning = true;
@@ -449,7 +452,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     nowTVMainCount = itemView.findViewById(R.id.mainCount);
                     nowTVStepCount = itemView.findViewById(R.id.stepCount);
                     nowTVHoldCount = itemView.findViewById(R.id.holdCount);
-                    nowIVGo = itemView.findViewById(R.id.go);
+                    nowIVGo = itemView.findViewById(R.id.shout);
                     nowIVRun = itemView.findViewById(R.id.run);
                     nowIVStop = itemView.findViewById(R.id.stop);
                     nowCard = itemView.findViewById(R.id.card_view);
@@ -489,19 +492,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         s = "" + gxInfo.getMainCount(); holder.tvMainCount.setText(s);
         s = "" + gxInfo.getSpeed();     holder.tvSpeed.setText(s);
 
-        holder.ivStep.setImageResource((gxInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
+        holder.ivCountUpDown.setImageResource((gxInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
         s = (gxInfo.isStep()) ? ("" + gxInfo.getStepCount()) : ""; holder.tvStepCount.setText(s);
 
         holder.ivHold.setImageResource((gxInfo.isHold()) ? R.mipmap.icon_hold_on : R.mipmap.icon_hold_off);
         s = (gxInfo.isHold()) ? ("" + gxInfo.getHoldCount()) : ""; holder.tvHoldCount.setText(s);
 
-        holder.ivCountUp.setImageResource(gxInfo.isCountUp() ? R.mipmap.icon_up_on : R.mipmap.icon_up_off);
+        holder.ivCountUpDown.setImageResource(countUpDowns[gxInfo.getCountUpDown()]);
         holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
         holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
         GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivRun);
 //        Glide.with(mActivity).load(R.drawable.i_now_running).into(gifImage);
         Glide.with(mActivity).load(R.drawable.running_gifmaker).into(gifImage);
-        holder.ivGo.setVisibility(View.VISIBLE);
+        holder.ivShout.setVisibility(View.VISIBLE);
         holder.ivRun.setVisibility(View.GONE);
         holder.ivStop.setVisibility(View.GONE);
     }

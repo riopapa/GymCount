@@ -27,7 +27,7 @@ import static com.urrecliner.gxcount.Vars.sndShortTbl;
 import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
 import static com.urrecliner.gxcount.Vars.sndTbl;
 import static com.urrecliner.gxcount.Vars.sndTenTbl;
-import static com.urrecliner.gxcount.Vars.soundShort;
+import static com.urrecliner.gxcount.Vars.soundStep;
 import static com.urrecliner.gxcount.Vars.soundSource;
 import static com.urrecliner.gxcount.Vars.soundSpecial;
 import static com.urrecliner.gxcount.Vars.soundTenSource;
@@ -151,18 +151,18 @@ class Utils {
 
         sndTbl = new int[soundSource.length];
         sndTenTbl = new int[soundTenSource.length];
-        sndShortTbl = new int[soundShort.length];
+        sndShortTbl = new int[soundStep.length];
         sndSpecialTbl = new int[soundSpecial.length];
 //        log("s","sndTbl len "+soundSource.length+" sndTbl len "+ sndTbl.length);
-        for (int i = 1; i < soundSource.length; i++) {
+        for (int i = 0; i < soundSource.length; i++) {
 //            log("s" + i,"sndTbl "+soundSource[i]);
             sndTbl[i] = soundPool.load(mContext, soundSource[i], 1);
 //            log("loaded","tbl"+sndTbl[i]);
         }
         for (int i = 1; i < soundTenSource.length; i++)
             sndTenTbl[i] = soundPool.load(mContext, soundTenSource[i], 1);
-        for (int i = 1; i < soundShort.length; i++)
-            sndShortTbl[i] = soundPool.load(mContext, soundShort[i], 1);
+        for (int i = 1; i < soundStep.length; i++)
+            sndShortTbl[i] = soundPool.load(mContext, soundStep[i], 1);
         for (int i = 0; i < soundSpecial.length; i++)
             sndSpecialTbl[i] = soundPool.load(mContext, soundSpecial[i], 1);
     }
