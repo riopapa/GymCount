@@ -2,13 +2,11 @@ package com.urrecliner.gxcount;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,6 +20,7 @@ import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
 import static com.urrecliner.gxcount.Vars.shouter;
 import static com.urrecliner.gxcount.Vars.sizeX;
 import static com.urrecliner.gxcount.Vars.spanCount;
+import static com.urrecliner.gxcount.Vars.speakName;
 import static com.urrecliner.gxcount.Vars.utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,18 +38,17 @@ public class MainActivity extends AppCompatActivity {
         utils.soundInitiate();
         sharePrefer = getApplicationContext().getSharedPreferences("gxCount", MODE_PRIVATE);
         spanCount = sharePrefer.getInt("spanCount", 3);
+        speakName = sharePrefer.getBoolean("speakName", true);
         recyclerViewAdapter = new RecyclerViewAdapter();
         gxInfoArrayList = new MakeGxInfos().getGxArray();
         gxInfos = utils.readSharedPrefTables();
         if (gxInfos.size() == 0)
             gxInfos = new MakeGxInfos().getGxArray();
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        sizeX = size.x;
+        sizeX = utils.getScreenWidth();
 
         prepareCards();
         utils.log(logId,"Ready");
+        utils.initiateTTS();
     }
 
     final static int MENU_DEFAULT = 100;
@@ -69,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
             item.setIcon(R.mipmap.icon_two);
         else
             item.setIcon(R.mipmap.icon_three);
+
+        item = menu.findItem(R.id.action_speak);
+        item.setIcon((speakName)? R.mipmap.i_speak_off:R.mipmap.i_speak_on);
         return true;
     }
 
@@ -104,13 +105,21 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharePrefer.edit();
             editor.putInt("spanCount", spanCount);
             editor.apply();
-            editor.commit();
             if (spanCount == 3)
                 item.setIcon(R.mipmap.icon_two);
             else
                 item.setIcon(R.mipmap.icon_three);
             prepareCards();
         }
+        if (id == R.id.action_speak) {
+            speakName = !speakName;
+            SharedPreferences.Editor editor = sharePrefer.edit();
+            editor.putBoolean("speakName", speakName);
+            editor.apply();
+            item.setIcon((speakName)? R.mipmap.i_speak_off:R.mipmap.i_speak_on);
+            prepareCards();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -123,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(SGL);
         recyclerView.setBackgroundColor(0x88000000 + ContextCompat.getColor(mContext, R.color.cardBack));
         recyclerView.setAdapter(recyclerViewAdapter);
-
     }
 
 }

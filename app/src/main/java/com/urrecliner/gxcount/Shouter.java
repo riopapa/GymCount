@@ -81,7 +81,6 @@ class Shouter {
         countUpDown = gxInfo.getCountUpDown();
         if ( countUpDown == 0 || countUpDown == 2) {    // count up
             int max = gxInfo.getMainCount() + (gxInfo.isStep() ? 1:0);
-            utils.log("count","tblsize "+tblSize+" , count "+gxInfo.getMainCount()+", countUpDown "+countUpDown+" max "+max);
             for (int i = 1; i < max; i++) {
                 if (gxInfo.isStep())
                     addStepSound(gxInfo.getStepCount());
@@ -164,7 +163,6 @@ class Shouter {
         @Override
         protected void onPreExecute() {
             nowIVGo.setEnabled(false);
-
         }
 
         @Override

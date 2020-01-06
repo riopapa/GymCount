@@ -49,5 +49,6 @@ class Vars {
     static int [] soundTable, soundTime;
     static String [] soundText;
     static Shouter shouter = new Shouter();
+    static boolean speakName = true;
 
 }

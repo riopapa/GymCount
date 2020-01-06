@@ -2,6 +2,7 @@ package com.urrecliner.gxcount;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -21,15 +23,16 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.urrecliner.gxcount.Vars.gxInfos;
+import static com.urrecliner.gxcount.Vars.mActivity;
 import static com.urrecliner.gxcount.Vars.mContext;
 import static com.urrecliner.gxcount.Vars.sharedPreferences;
 import static com.urrecliner.gxcount.Vars.sndShortTbl;
 import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
 import static com.urrecliner.gxcount.Vars.sndTbl;
 import static com.urrecliner.gxcount.Vars.sndTenTbl;
-import static com.urrecliner.gxcount.Vars.soundStep;
 import static com.urrecliner.gxcount.Vars.soundSource;
 import static com.urrecliner.gxcount.Vars.soundSpecial;
+import static com.urrecliner.gxcount.Vars.soundStep;
 import static com.urrecliner.gxcount.Vars.soundTenSource;
 
 class Utils {
@@ -41,51 +44,50 @@ class Utils {
         Log.w(tag, where + " " + text);
     }
 
-    AudioManager mAudioManager = null;
-    AudioFocusRequest mFocusGain = null;
-    TextToSpeech mTTS;
+    private AudioManager mAudioManager = null;
+    private AudioFocusRequest mFocusGain = null;
+    private TextToSpeech mTTS;
 
     void ttsSpeak(String text) {
-        Log.w("TTS","ttsspeak");
         initiateTTS();
         final String t = text;
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                Log.w("TTS1","ttsspeak");
                 try {
                     readyAudioManager();
                     mTTS.setPitch(1.4f);
                     mTTS.setSpeechRate(1.4f);
                     try {
-                        Log.w("TTS6","ttsspeak");
                         mTTS.speak(t, TextToSpeech.QUEUE_ADD, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
                     } catch (Exception e) {
-                        log("speak", "justSpeak:" + e.toString());
+                        //
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 1000);
+        }, 100);
     }
 
     void initiateTTS() {
-        mTTS = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    int result = mTTS.setLanguage(Locale.KOREA);
-                    if (result == TextToSpeech.LANG_MISSING_DATA
-                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        log("inittTS", "Language not supported");
+        if (mTTS == null) {
+            mTTS = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if (status == TextToSpeech.SUCCESS) {
+                        int result = mTTS.setLanguage(Locale.KOREA);
+                        if (result == TextToSpeech.LANG_MISSING_DATA
+                                || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                            log("inittTS", "Language not supported");
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
-    void readyAudioManager() {
+    private void readyAudioManager() {
         if(mAudioManager == null) {
             try {
                 mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -95,10 +97,6 @@ class Utils {
                 log("err", "mAudioManager Error " + e.toString());
             }
         }
-    }
-
-    void refreshScreen (RecyclerViewAdapter recyclerViewAdapter, int idx) {
-        recyclerViewAdapter.notifyItemRemoved(idx);
     }
 
     void saveSharedPrefTables() {
@@ -127,6 +125,12 @@ class Utils {
         return list;
     }
 
+    int getScreenWidth() {
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.x;
+    }
 
     private SoundPool soundPool = null;
 
