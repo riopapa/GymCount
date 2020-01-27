@@ -64,7 +64,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTypeName, tvSpeed, tvSpeedTxt, tvUpDownCount, tvMainCountTxt, tvStepCount, tvHoldCount;
+        TextView tvTypeName, tvSpeed, tvSpeedTxt, tvUpDownCount, tvStepCount, tvHoldCount;
         ImageView ivHold, ivUpDown, ivStep, ivStart, ivReady, ivShout, ivRun, ivStop, ivDelete;
         int wheelResult = 0;
 
@@ -92,11 +92,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tvTypeName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (cdtRunning)
-                        return;
                     currIdx = getAdapterPosition();
                     gxInfo = gxInfos.get(currIdx);
-
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("이름은? ");
                     final EditText input = new EditText(mContext);
@@ -141,7 +138,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
                     int val = (gxInfo.getSpeed() - SPEED_MIN) / 5;
-                    wV.setAdditionCenterMark("\u3040");     // whole space
+                    wV.setAdditionCenterMark("");     // whole space
+//                    wV.setAdditionCenterMark("\u3040");     // whole space
                     wV.selectIndex(val);    // index pointer
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
                         @Override
@@ -464,13 +462,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     nowIVStop = itemView.findViewById(R.id.stop);
                     nowCard = itemView.findViewById(R.id.card_view);
                     if (speakName) {
-                        utils.ttsSpeak(gxInfo.getTypeName());
+                        utils.ttsSpeak(gxInfo.getTypeName()+", , "+gxInfo.getMainCount()+" 회애");
                         new Handler().postDelayed(new Runnable(){
                             @Override
                             public void run() {
                                 shouter.start();
                             }
-                        }, 3000);
+                        }, 2000);
                     }
                     else
                         shouter.start();

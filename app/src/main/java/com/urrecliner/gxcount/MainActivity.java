@@ -9,6 +9,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         prepareCards();
         utils.log(logId,"Ready");
         utils.initiateTTS();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     final static int MENU_DEFAULT = 100;

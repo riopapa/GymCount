@@ -81,7 +81,7 @@ class Shouter {
         countUpDown = gxInfo.getCountUpDown();
         if ( countUpDown == 0 || countUpDown == 2) {    // count up
             int max = gxInfo.getMainCount() + (gxInfo.isStep() ? 1:0);
-            for (int i = 1; i < max; i++) {
+            for (int i = 1; i <= max; i++) {
                 if (gxInfo.isStep())
                     addStepSound(gxInfo.getStepCount());
                 if (i < 21) {
@@ -145,7 +145,7 @@ class Shouter {
         }
         soundTable[sIdx] = sndSpecialTbl[1]; // R.raw.i_nomore;
         soundText[sIdx] = NONE_PREFIX;
-        soundTime[sIdx] = 1000;
+        soundTime[sIdx] = 500;
         sIdx++;
     }
 
@@ -173,9 +173,9 @@ class Shouter {
             int idx = 0;
             while (soundTime[idx] > 0) {
                 if (cdtRunning) {
+                    SystemClock.sleep(soundTime[idx]);
                     publishProgress(soundText[idx]);
                     utils.beepSound(soundTable[idx], 1f);
-                    SystemClock.sleep(soundTime[idx]);
                     idx++;
                 } else
                     break;

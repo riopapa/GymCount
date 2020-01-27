@@ -18,6 +18,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.OverScroller;
 
 import java.util.ArrayList;
@@ -126,7 +127,6 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 		mContentRectF = new RectF();
 
 		mGestureDetectorCompat = new GestureDetectorCompat(getContext(), this);
-
 		selectIndex(0);
 	}
 
@@ -152,12 +152,12 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 			max = temp.width();
 		}
 
-		if (!TextUtils.isEmpty(mAdditionCenterMark)) {
-			mMarkTextPaint.setTextSize(mNormalTextSize);
-			mMarkTextPaint.getTextBounds(mAdditionCenterMark, 0, mAdditionCenterMark.length(), temp);
-			mAdditionCenterMarkWidth = temp.width();
-			max += temp.width();
-		}
+		if (TextUtils.isEmpty(mAdditionCenterMark))
+			mAdditionCenterMark = "\u0020\u0020";
+		mMarkTextPaint.setTextSize(mNormalTextSize);
+		mMarkTextPaint.getTextBounds(mAdditionCenterMark, 0, mAdditionCenterMark.length(), temp);
+		mAdditionCenterMarkWidth = temp.width() + 16;
+		max += temp.width() + 16;
 
 		mIntervalDis = max * mIntervalFactor;
 	}
@@ -307,7 +307,6 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 					canvas.drawText(temp, 0, temp.length(), x, mHeight - mBottomSpace, mMarkTextPaint);
 				}
 			}
-
 			x += mIntervalDis;
 		}
 	}
