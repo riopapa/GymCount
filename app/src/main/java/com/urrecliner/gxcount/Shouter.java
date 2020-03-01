@@ -74,7 +74,7 @@ class Shouter {
         if (gxInfo.isSayStart()) {
             soundTable[sIdx] = sndSpecialTbl[2];   // R.raw.i_start
             soundText[sIdx] = NONE_PREFIX;
-            soundTime[sIdx] = delayTime + delayTime;
+            soundTime[sIdx] = 2500;
             sIdx++;
         }
 

@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -86,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
         if (id >= MENU_DEFAULT && id < MENU_DEFAULT +gxInfoArrayList.size()) {
             id = id - MENU_DEFAULT;
             GxInfo gxNew = gxInfoArrayList.get(id);
+            String s = gxNew.getTypeName();
+            for (int i = 0; i < gxInfos.size(); i++)
+                if (gxInfos.get(i).getTypeName().equals(s))
+                    s += "1";
+            gxNew.setTypeName(s);
             gxInfos.add(gxInfos.size(),gxNew);
             utils.saveSharedPrefTables();
             recyclerViewAdapter.notifyItemChanged(gxInfos.size());

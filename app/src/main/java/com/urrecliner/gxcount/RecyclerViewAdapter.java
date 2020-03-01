@@ -57,8 +57,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private static TextView tvNowSpeed, tvNowMainCount, tvNowStepCount, tvNowHoldCount;
 
-    private final static int SPEED_MIN = 20, SPEED_MAX = 90;
-    private final static int COUNT_MIN = 4, COUNT_MID = 20, COUNT_MAX = 85;
+    private final static int SPEED_MIN = 5, SPEED_MAX = 90;
+    private final static int COUNT_MIN = 4, COUNT_MAX = 105;
     private final static int STEP_MIN = 2, STEP_MAX = 12;
     private final static int HOLD_MIN = 5, HOLD_MAX = 30;
 
@@ -66,7 +66,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         TextView tvTypeName, tvSpeed, tvSpeedTxt, tvUpDownCount, tvStepCount, tvHoldCount;
         ImageView ivHold, ivUpDown, ivStep, ivStart, ivReady, ivShout, ivRun, ivStop, ivDelete;
-        int wheelResult = 0;
+        int wheelValue = 0;
+
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -106,6 +107,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         String s = input.getText().toString();
                         if (s.length() < 1)
                             s = "운동이름 "+(currIdx +1);
+                        for (int i = 0; i < gxInfos.size(); i++)
+                            if (i != currIdx && gxInfos.get(i).getTypeName().equals(s))
+                                s += "1";
                         gxInfo.setTypeName(s);
                         gxInfos.set(currIdx, gxInfo);
                         utils.saveSharedPrefTables();
@@ -137,14 +141,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     final List<String> wheelValues = getSpeedTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
-                    int val = (gxInfo.getSpeed() - SPEED_MIN) / 5;
+                    int index = gxInfo.getSpeed();
+                    for (int i = 0; i < wheelValues.size(); i++)
+                        if (wheelValues.get(i).equals(""+index))
+                            wV.selectIndex(i);    // index pointer
+
                     wV.setAdditionCenterMark("");     // whole space
 //                    wV.setAdditionCenterMark("\u3040");     // whole space
-                    wV.selectIndex(val);    // index pointer
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
                         @Override
                         public void onWheelItemSelected(WheelView wheelView, int position) {
-                            wheelResult = position;
+                            wheelValue = Integer.parseInt(wheelValues.get(position));
                         }
                         @Override
                         public void onWheelItemChanged(WheelView wheelView, int position) {
@@ -155,12 +162,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    String s;
-                                    wheelResult = wheelResult * 5 + SPEED_MIN;
-                                    gxInfo.setSpeed(wheelResult);
+                                    gxInfo.setSpeed(wheelValue);
                                     gxInfos.set(currIdx, gxInfo);
                                     utils.saveSharedPrefTables();
-                                    s = wheelResult+"";
+                                    String s = wheelValue+"";
                                     tvNowSpeed.setText(s);
                                     tvNowSpeed.invalidate();
                                 }
@@ -174,7 +179,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 List <String> getSpeedTable() {
                     List<String> result = new ArrayList<>();
-                    for (int i = SPEED_MIN; i <= SPEED_MAX; i+= 5) result.add("" + i);
+                    for (int i = SPEED_MIN; i < 15; i++) result.add("" + i);
+                    for (int i = 15; i <= SPEED_MAX; i+= 5) result.add("" + i);
                     return result;
                 }
             });
@@ -200,16 +206,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     wV.setItems(wheelValues);
                     wV.setAdditionCenterMark("회");
                     String val = ""+gxInfo.getMainCount();
-                    int idx = 0;
-                    for (; idx < wheelValues.size(); idx++) {
-                        if (wheelValues.get(idx).equals(val))
-                            break;
-                    }
-                    wV.selectIndex(idx);    // index pointer
+                    for (int i = 0; i < wheelValues.size(); i++)
+                        if (wheelValues.get(i).equals(val))
+                            wV.selectIndex(i);    // index pointer
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
                         @Override
                         public void onWheelItemSelected(WheelView wheelView, int position) {
-                            wheelResult = position;
+                            wheelValue = Integer.parseInt(wheelValues.get(position));
                         }
                         @Override
                         public void onWheelItemChanged(WheelView wheelView, int position) {
@@ -220,10 +223,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    String s = wheelValues.get(wheelResult);
-                                    gxInfo.setMainCount(Integer.parseInt(s));
+                                    gxInfo.setMainCount(wheelValue);
                                     gxInfos.set(currIdx, gxInfo);
                                     utils.saveSharedPrefTables();
+                                    String s = ""+wheelValue;
                                     tvNowMainCount.setText(s);
                                     tvNowMainCount.invalidate();
                                 }
@@ -237,8 +240,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 List <String> setCountTable() {
                     List<String> result = new ArrayList<>();
-                        for (int i = COUNT_MIN; i <= COUNT_MID; i++) result.add("" + i);
-                        for (int i = 1; i < COUNT_MAX/5 ; i++) result.add(""+(COUNT_MID + i * 5));
+                    for (int i = COUNT_MIN; i < 20; i++) result.add("" + i);
+                    for (int i = 20; i < 60 ; i+=5) result.add(""+i);
+                    for (int i = 60; i < COUNT_MAX ; i+=10) result.add(""+i);
                     return result;
                 }
             });
@@ -263,12 +267,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     final List<String> wheelValues = setCountTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
+                    String val = ""+gxInfo.getStepCount();
+                    for (int i = 0; i < wheelValues.size(); i++)
+                        if (wheelValues.get(i).equals(val))
+                            wV.selectIndex(i);    // index pointer
                     wV.setAdditionCenterMark("회");
-                    wV.selectIndex(gxInfo.getStepCount()-STEP_MIN);
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
                         @Override
                         public void onWheelItemSelected(WheelView wheelView, int position) {
-                            wheelResult = position;
+                            wheelValue = Integer.parseInt(wheelValues.get(position));
                         }
                         @Override
                         public void onWheelItemChanged(WheelView wheelView, int position) {
@@ -279,10 +286,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    String s = ""+gxInfo.getStepCount();
-                                    gxInfo.setStepCount(wheelResult+STEP_MIN);
+                                    gxInfo.setStepCount(wheelValue);
                                     gxInfos.set(currIdx, gxInfo);
                                     utils.saveSharedPrefTables();
+                                    String s = ""+wheelValue;
                                     tvNowStepCount.setText(s);
                                     tvNowStepCount.invalidate();
                                 }
@@ -322,12 +329,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     final List<String> wheelValues = setCountTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
+                    String val = ""+gxInfo.getHoldCount();
+                    for (int i = 0; i < wheelValues.size(); i++)
+                        if (wheelValues.get(i).equals(val))
+                            wV.selectIndex(i);    // index pointer
                     wV.setAdditionCenterMark("회");
-                    wV.selectIndex(gxInfo.getHoldCount()-HOLD_MIN);
                     wV.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener() {
                         @Override
-                        public void onWheelItemSelected(WheelView wheelView, int pos) {
-                            wheelResult = pos;
+                        public void onWheelItemSelected(WheelView wheelView, int position) {
+                            wheelValue = Integer.parseInt(wheelValues.get(position));
                         }
                         @Override
                         public void onWheelItemChanged(WheelView wheelView, int pos) {
@@ -338,11 +348,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    String s;
-                                    gxInfo.setHoldCount(wheelResult+HOLD_MIN);
+                                    gxInfo.setHoldCount(wheelValue);
                                     gxInfos.set(currIdx, gxInfo);
                                     utils.saveSharedPrefTables();
-                                    s = ""+(wheelResult+HOLD_MIN);
+                                    String s = ""+wheelValue;
                                     tvNowHoldCount.setText(s);
                                     tvNowHoldCount.invalidate();
                                 }
