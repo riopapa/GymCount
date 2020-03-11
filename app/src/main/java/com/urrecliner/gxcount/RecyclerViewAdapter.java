@@ -66,7 +66,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         LinearLayout loReadyStart, loShoutStop;
 //        GifView gifView;
         int wheelValue = 0;
-        
+
         ViewHolder(final View itemView) {
             super(itemView);
 
