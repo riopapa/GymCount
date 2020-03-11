@@ -15,9 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,15 +26,15 @@ import static com.urrecliner.gxcount.Vars.gxInfos;
 import static com.urrecliner.gxcount.Vars.mActivity;
 import static com.urrecliner.gxcount.Vars.mContext;
 import static com.urrecliner.gxcount.Vars.nowCard;
-import static com.urrecliner.gxcount.Vars.nowIVGo;
-import static com.urrecliner.gxcount.Vars.nowIVRun;
+import static com.urrecliner.gxcount.Vars.nowIVReady;
+import static com.urrecliner.gxcount.Vars.nowIVShout;
+import static com.urrecliner.gxcount.Vars.nowIVStart;
 import static com.urrecliner.gxcount.Vars.nowIVStop;
 import static com.urrecliner.gxcount.Vars.nowTVHoldCount;
 import static com.urrecliner.gxcount.Vars.nowTVMainCount;
 import static com.urrecliner.gxcount.Vars.nowTVStepCount;
 import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
 import static com.urrecliner.gxcount.Vars.shouter;
-import static com.urrecliner.gxcount.Vars.sizeX;
 import static com.urrecliner.gxcount.Vars.spanCount;
 import static com.urrecliner.gxcount.Vars.speakName;
 import static com.urrecliner.gxcount.Vars.utils;
@@ -65,10 +62,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvTypeName, tvSpeed, tvSpeedTxt, tvUpDownCount, tvStepCount, tvHoldCount;
-        ImageView ivHold, ivUpDown, ivStep, ivStart, ivReady, ivShout, ivRun, ivStop, ivDelete;
+        ImageView ivHold, ivUpDown, ivStep, ivStart, ivReady, ivShout, ivStop, ivDelete;
+        LinearLayout loReadyStart, loShoutStop;
+//        GifView gifView;
         int wheelValue = 0;
-
-
+        
         ViewHolder(final View itemView) {
             super(itemView);
 
@@ -84,11 +82,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ivStart = itemView.findViewById(R.id.start);
             ivReady = itemView.findViewById(R.id.ready);
             ivShout = itemView.findViewById(R.id.shout);
-            ivRun = itemView.findViewById(R.id.run);
-            ivRun.setVisibility(View.GONE);
             ivStop = itemView.findViewById(R.id.stop);
             ivStop.setVisibility(View.GONE);
             ivDelete = itemView.findViewById(R.id.delete);
+            loReadyStart = itemView.findViewById(R.id.readyStart);
+            loShoutStop = itemView.findViewById(R.id.shoutStop);
 
             tvTypeName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -179,8 +177,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 List <String> getSpeedTable() {
                     List<String> result = new ArrayList<>();
-                    for (int i = SPEED_MIN; i < 15; i++) result.add("" + i);
-                    for (int i = 15; i <= SPEED_MAX; i+= 5) result.add("" + i);
+                    for (int i = SPEED_MIN; i < 25; i++) result.add("" + i);
+                    for (int i = 25; i <= SPEED_MAX; i+= 5) result.add("" + i);
                     return result;
                 }
             });
@@ -466,9 +464,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     nowTVMainCount = itemView.findViewById(R.id.mainCount);
                     nowTVStepCount = itemView.findViewById(R.id.stepCount);
                     nowTVHoldCount = itemView.findViewById(R.id.holdCount);
-                    nowIVGo = itemView.findViewById(R.id.shout);
-                    nowIVRun = itemView.findViewById(R.id.run);
+//                    nowGifView = itemView.findViewById(R.id.gif);
+                    nowIVShout = itemView.findViewById(R.id.shout);
                     nowIVStop = itemView.findViewById(R.id.stop);
+                    nowIVReady = itemView.findViewById(R.id.ready);
+                    nowIVStart = itemView.findViewById(R.id.start);
                     nowCard = itemView.findViewById(R.id.card_view);
                     if (speakName) {
                         utils.ttsSpeak(gxInfo.getTypeName()+", , "+gxInfo.getMainCount()+" 회애");
@@ -483,7 +483,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         shouter.start();
                 }
             });
-
             ivStop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -551,25 +550,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.tvHoldCount.setTextSize(textSize);
         s = (gxInfo.isHold()) ? ("" + gxInfo.getHoldCount()) : ""; holder.tvHoldCount.setText(s);
 
-        lpL.width = sizeX / spanCount / 5;
+        lpL = (LinearLayout.LayoutParams) holder.loReadyStart.getLayoutParams();
+        lpL.weight = 45;
+        lpL.height = textSize * 165 / 10;
+        lpR = (LinearLayout.LayoutParams) holder.loShoutStop.getLayoutParams();
+        lpR.weight = 55;
+        lpR.height = textSize * 165 / 10;
+        holder.loReadyStart.setLayoutParams(lpL);
+        holder.loShoutStop.setLayoutParams(lpR);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        holder.ivStart.setLayoutParams(lp);
+        holder.ivReady.setLayoutParams(lp);
 
-        holder.ivReady.setLayoutParams(lpL);
-        holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
-
-        holder.ivStart.setLayoutParams(lpL);
-        holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
-
-        LinearLayout.LayoutParams lpBig = (LinearLayout.LayoutParams) holder.ivShout.getLayoutParams();
-        lpBig.width = sizeX / spanCount / 3;
-        lpBig.height = sizeX / spanCount / 3;
-        holder.ivShout.setLayoutParams(lpBig);
+//        holder.ivReady.setLayoutParams(lpL);
+//        holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
+//        holder.ivStart.setLayoutParams(lpL);
+//        holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
+//        holder.ivReady.setVisibility(View.VISIBLE);
+//        holder.ivStart.setVisibility(View.VISIBLE);
         holder.ivShout.setVisibility(View.VISIBLE);
-        holder.ivShout.setEnabled(true);
-        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(holder.ivRun);
-        Glide.with(mActivity).load(R.drawable.running_gifmaker).into(gifImage);
-        holder.ivRun.setLayoutParams(lpBig);
-        holder.ivRun.setVisibility(View.GONE);
-        holder.ivStop.setLayoutParams(lpBig);
+//        holder.gifView.setVisibility(View.GONE);
         holder.ivStop.setVisibility(View.GONE);
+//        LinearLayout.LayoutParams lpBig = (LinearLayout.LayoutParams) holder.ivShout.getLayoutParams();
+//        lpBig.width = sizeX / spanCount / 3;
+//        lpBig.height = sizeX / spanCount / 3;
+//        holder.ivShout.setLayoutParams(lpBig);
+//        holder.ivStop.setLayoutParams(lpBig);
+//        holder.ivShout.setLayoutParams(lpBig);
+//        holder.ivShout.setEnabled(true);
     }
 }

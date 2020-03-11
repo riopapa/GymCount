@@ -44,7 +44,8 @@ class Vars {
     static int[] sndTbl, sndTenTbl, sndShortTbl, sndSpecialTbl;
 
     static TextView nowTVMainCount, nowTVStepCount, nowTVHoldCount;
-    static ImageView nowIVGo, nowIVRun, nowIVStop;
+    static ImageView nowIVShout, nowIVStop, nowIVReady, nowIVStart;
+//    static GifView nowGifView;
     static CardView nowCard;
     static int [] soundTable, soundTime;
     static String [] soundText;

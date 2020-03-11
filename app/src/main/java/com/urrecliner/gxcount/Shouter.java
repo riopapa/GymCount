@@ -11,8 +11,7 @@ import static com.urrecliner.gxcount.Vars.gxInfo;
 import static com.urrecliner.gxcount.Vars.gxInfos;
 import static com.urrecliner.gxcount.Vars.mContext;
 import static com.urrecliner.gxcount.Vars.nowCard;
-import static com.urrecliner.gxcount.Vars.nowIVGo;
-import static com.urrecliner.gxcount.Vars.nowIVRun;
+import static com.urrecliner.gxcount.Vars.nowIVShout;
 import static com.urrecliner.gxcount.Vars.nowIVStop;
 import static com.urrecliner.gxcount.Vars.nowTVHoldCount;
 import static com.urrecliner.gxcount.Vars.nowTVMainCount;
@@ -39,6 +38,7 @@ class Shouter {
     void start() {
         calcDelayTime();
         setupSoundTable();
+
         try {
             new shouting().execute("start");
         } catch (Exception e) {
@@ -162,18 +162,18 @@ class Shouter {
 
         @Override
         protected void onPreExecute() {
-            nowIVGo.setEnabled(false);
         }
 
         @Override
         protected String doInBackground(String... inputParams) {
 
             publishProgress(INIT_PREFIX + INIT_PREFIX);
-            SystemClock.sleep(1500);
+            SystemClock.sleep(1000);
             int idx = 0;
             while (soundTime[idx] > 0) {
-                if (cdtRunning) {
+                if (cdtRunning)
                     SystemClock.sleep(soundTime[idx]);
+                if (cdtRunning) {
                     publishProgress(soundText[idx]);
                     utils.beepSound(soundTable[idx], 1f);
                     idx++;
@@ -202,9 +202,13 @@ class Shouter {
                     nowTVHoldCount.invalidate();
                     break;
                 case INIT_PREFIX:
-                    nowIVGo.setVisibility(View.GONE);
-                    nowIVRun.setVisibility(View.VISIBLE);
+//                    nowGifView.setVisibility(View.VISIBLE);
+//                    nowGifView.setGifResource(R.drawable.running_gifmaker);
+//                    nowGifView.play();
+//                    nowIVStart.setVisibility(View.INVISIBLE);
+//                    nowIVReady.setVisibility(View.INVISIBLE);
                     nowIVStop.setVisibility(View.VISIBLE);
+                    nowIVShout.setVisibility(View.GONE);
                     nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardRun));
                     nowCard.invalidate();
                     break;
@@ -224,9 +228,13 @@ class Shouter {
     }
     private static void finishHandler() {
         cdtRunning = false;
-        SystemClock.sleep(500);
+//        nowGifView.pause();
+//        nowGifView.setVisibility(View.GONE);
+        nowIVShout.setVisibility(View.VISIBLE);
+        nowIVStop.setVisibility(View.GONE);
         nowCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.cardBack));
         recyclerViewAdapter.notifyItemChanged(currIdx);
+//        SystemClock.sleep(500);
     }
 
 }
