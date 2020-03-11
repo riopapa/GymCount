@@ -562,22 +562,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         holder.ivStart.setLayoutParams(lp);
         holder.ivReady.setLayoutParams(lp);
-
-//        holder.ivReady.setLayoutParams(lpL);
-//        holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
-//        holder.ivStart.setLayoutParams(lpL);
-//        holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
-//        holder.ivReady.setVisibility(View.VISIBLE);
-//        holder.ivStart.setVisibility(View.VISIBLE);
+        holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
+        holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
         holder.ivShout.setVisibility(View.VISIBLE);
-//        holder.gifView.setVisibility(View.GONE);
         holder.ivStop.setVisibility(View.GONE);
-//        LinearLayout.LayoutParams lpBig = (LinearLayout.LayoutParams) holder.ivShout.getLayoutParams();
-//        lpBig.width = sizeX / spanCount / 3;
-//        lpBig.height = sizeX / spanCount / 3;
-//        holder.ivShout.setLayoutParams(lpBig);
-//        holder.ivStop.setLayoutParams(lpBig);
-//        holder.ivShout.setLayoutParams(lpBig);
-//        holder.ivShout.setEnabled(true);
     }
 }
