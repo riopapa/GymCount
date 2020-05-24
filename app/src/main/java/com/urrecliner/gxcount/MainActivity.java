@@ -7,10 +7,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 
@@ -52,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
         utils.log(logId,"Ready");
         utils.initiateTTS();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        MobileAds.initialize(this,  mContext.getString(R.string.adv_id)); //""ca-app-pub-3940256099942544/6300978111");
+        AdView adView  = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        adView.loadAd(adRequest);
+
     }
 
     final static int MENU_DEFAULT = 100;
