@@ -18,7 +18,13 @@
         android:choiceMode="multipleChoice"
         >
     </android.support.v7.widget.RecyclerView>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="a\nb\nc\n"
+        android:textSize="32sp"
+        android:layout_alignParentBottom="true"
+        />
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
