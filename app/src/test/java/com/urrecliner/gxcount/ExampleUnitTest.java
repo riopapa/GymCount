@@ -1,4 +1,4 @@
-package com.urrecliner.gxcount;
+package com.urrecliner.gymcount;
 
 import org.junit.Test;
 

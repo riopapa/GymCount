@@ -1,5 +1,5 @@
-# GX Count
-**GX Count** is the android application to assist self gym counting
+# Gym Count
+**Gym Count** is the android application to assist self gym counting
 
 - You can set various gym style (currently 6 cases) 
 - Following are settable

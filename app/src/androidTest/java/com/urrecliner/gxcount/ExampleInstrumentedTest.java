@@ -1,4 +1,4 @@
-package com.urrecliner.gxcount;
+package com.urrecliner.gymcount;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.urrecliner.gxcount", appContext.getPackageName());
+        assertEquals("com.urrecliner.gymcount", appContext.getPackageName());
     }
 }

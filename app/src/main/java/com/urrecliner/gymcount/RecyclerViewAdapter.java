@@ -1,4 +1,4 @@
-package com.urrecliner.gxcount;
+package com.urrecliner.gymcount;
 
 import android.content.DialogInterface;
 import android.os.Handler;
@@ -18,37 +18,37 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.urrecliner.gxcount.Vars.cdtRunning;
-import static com.urrecliner.gxcount.Vars.countUpDowns;
-import static com.urrecliner.gxcount.Vars.currIdx;
-import static com.urrecliner.gxcount.Vars.gxInfo;
-import static com.urrecliner.gxcount.Vars.gxInfos;
-import static com.urrecliner.gxcount.Vars.mActivity;
-import static com.urrecliner.gxcount.Vars.mContext;
-import static com.urrecliner.gxcount.Vars.nowCard;
-import static com.urrecliner.gxcount.Vars.nowIVReady;
-import static com.urrecliner.gxcount.Vars.nowIVShout;
-import static com.urrecliner.gxcount.Vars.nowIVStart;
-import static com.urrecliner.gxcount.Vars.nowIVStop;
-import static com.urrecliner.gxcount.Vars.nowTVHoldCount;
-import static com.urrecliner.gxcount.Vars.nowTVMainCount;
-import static com.urrecliner.gxcount.Vars.nowTVStepCount;
-import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
-import static com.urrecliner.gxcount.Vars.shouter;
-import static com.urrecliner.gxcount.Vars.spanCount;
-import static com.urrecliner.gxcount.Vars.speakName;
-import static com.urrecliner.gxcount.Vars.utils;
+import static com.urrecliner.gymcount.Vars.cdtRunning;
+import static com.urrecliner.gymcount.Vars.countUpDowns;
+import static com.urrecliner.gymcount.Vars.currIdx;
+import static com.urrecliner.gymcount.Vars.gymInfo;
+import static com.urrecliner.gymcount.Vars.gymInfos;
+import static com.urrecliner.gymcount.Vars.mActivity;
+import static com.urrecliner.gymcount.Vars.mContext;
+import static com.urrecliner.gymcount.Vars.nowCard;
+import static com.urrecliner.gymcount.Vars.nowIVReady;
+import static com.urrecliner.gymcount.Vars.nowIVShout;
+import static com.urrecliner.gymcount.Vars.nowIVStart;
+import static com.urrecliner.gymcount.Vars.nowIVStop;
+import static com.urrecliner.gymcount.Vars.nowTVHoldCount;
+import static com.urrecliner.gymcount.Vars.nowTVMainCount;
+import static com.urrecliner.gymcount.Vars.nowTVStepCount;
+import static com.urrecliner.gymcount.Vars.recyclerViewAdapter;
+import static com.urrecliner.gymcount.Vars.shouter;
+import static com.urrecliner.gymcount.Vars.spanCount;
+import static com.urrecliner.gymcount.Vars.speakName;
+import static com.urrecliner.gymcount.Vars.utils;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>  {
 
     @Override
     public int getItemCount() {
-        return gxInfos.size();
+        return gymInfos.size();
     }
 
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.one_timer, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.one_train, parent, false);
         return new ViewHolder(view);
     }
 
@@ -92,11 +92,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View view) {
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
+                    gymInfo = gymInfos.get(currIdx);
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("이름은? ");
                     final EditText input = new EditText(mContext);
-                    input.setText(gxInfo.getTypeName());
+                    input.setText(gymInfo.getTypeName());
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(input);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -105,11 +105,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         String s = input.getText().toString();
                         if (s.length() < 1)
                             s = "운동이름 "+(currIdx +1);
-                        for (int i = 0; i < gxInfos.size(); i++)
-                            if (i != currIdx && gxInfos.get(i).getTypeName().equals(s))
+                        for (int i = 0; i < gymInfos.size(); i++)
+                            if (i != currIdx && gymInfos.get(i).getTypeName().equals(s))
                                 s += "1";
-                        gxInfo.setTypeName(s);
-                        gxInfos.set(currIdx, gxInfo);
+                        gymInfo.setTypeName(s);
+                        gymInfos.set(currIdx, gymInfo);
                         utils.saveSharedPrefTables();
                         tvTypeName.setText(s);
                         tvTypeName.invalidate();
@@ -125,21 +125,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
+                    gymInfo = gymInfos.get(currIdx);
                     tvNowSpeed = tvSpeed;
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     LayoutInflater inflater = mActivity.getLayoutInflater();
                     View theView = inflater.inflate(R.layout.get_number, null);
                     final TextView tvt = theView.findViewById(R.id.title);
-                    tvt.setText(gxInfo.getTypeName());
+                    tvt.setText(gymInfo.getTypeName());
                     final TextView tvs = theView.findViewById(R.id.subtitle);
                     tvs.setText(" 운동 속도 ");
 
                     final List<String> wheelValues = getSpeedTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
-                    int index = gxInfo.getSpeed();
+                    int index = gymInfo.getSpeed();
                     for (int i = 0; i < wheelValues.size(); i++)
                         if (wheelValues.get(i).equals(""+index))
                             wV.selectIndex(i);    // index pointer
@@ -160,8 +160,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    gxInfo.setSpeed(wheelValue);
-                                    gxInfos.set(currIdx, gxInfo);
+                                    gymInfo.setSpeed(wheelValue);
+                                    gymInfos.set(currIdx, gymInfo);
                                     utils.saveSharedPrefTables();
                                     String s = wheelValue+"";
                                     tvNowSpeed.setText(s);
@@ -189,13 +189,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
+                    gymInfo = gymInfos.get(currIdx);
                     tvNowMainCount = tvUpDownCount;
                     AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     LayoutInflater inflater = mActivity.getLayoutInflater();
                     View theView = inflater.inflate(R.layout.get_number, null);
                     final TextView tvt = theView.findViewById(R.id.title);
-                    tvt.setText(gxInfo.getTypeName());
+                    tvt.setText(gymInfo.getTypeName());
                     final TextView tvs = theView.findViewById(R.id.subtitle);
                     tvs.setText(" 횟수 설정 ");
 
@@ -203,7 +203,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
                     wV.setAdditionCenterMark("회");
-                    String val = ""+gxInfo.getMainCount();
+                    String val = ""+ gymInfo.getMainCount();
                     for (int i = 0; i < wheelValues.size(); i++)
                         if (wheelValues.get(i).equals(val))
                             wV.selectIndex(i);    // index pointer
@@ -221,8 +221,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    gxInfo.setMainCount(wheelValue);
-                                    gxInfos.set(currIdx, gxInfo);
+                                    gymInfo.setMainCount(wheelValue);
+                                    gymInfos.set(currIdx, gymInfo);
                                     utils.saveSharedPrefTables();
                                     String s = ""+wheelValue;
                                     tvNowMainCount.setText(s);
@@ -251,21 +251,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
+                    gymInfo = gymInfos.get(currIdx);
                     tvNowStepCount = tvStepCount;
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     LayoutInflater inflater = mActivity.getLayoutInflater();
                     View theView = inflater.inflate(R.layout.get_number, null);
                     final TextView tvt = theView.findViewById(R.id.title);
-                    tvt.setText(gxInfo.getTypeName());
+                    tvt.setText(gymInfo.getTypeName());
                     final TextView tvs = theView.findViewById(R.id.subtitle);
                     tvs.setText(" 스텝수 설정 ");
 
                     final List<String> wheelValues = setCountTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
-                    String val = ""+gxInfo.getStepCount();
+                    String val = ""+ gymInfo.getStepCount();
                     for (int i = 0; i < wheelValues.size(); i++)
                         if (wheelValues.get(i).equals(val))
                             wV.selectIndex(i);    // index pointer
@@ -284,8 +284,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    gxInfo.setStepCount(wheelValue);
-                                    gxInfos.set(currIdx, gxInfo);
+                                    gymInfo.setStepCount(wheelValue);
+                                    gymInfos.set(currIdx, gymInfo);
                                     utils.saveSharedPrefTables();
                                     String s = ""+wheelValue;
                                     tvNowStepCount.setText(s);
@@ -313,21 +313,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
+                    gymInfo = gymInfos.get(currIdx);
                     tvNowHoldCount = tvHoldCount;
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                     LayoutInflater inflater = mActivity.getLayoutInflater();
                     View theView = inflater.inflate(R.layout.get_number, null);
                     final TextView tvt = theView.findViewById(R.id.title);
-                    tvt.setText(gxInfo.getTypeName());
+                    tvt.setText(gymInfo.getTypeName());
                     final TextView tvs = theView.findViewById(R.id.subtitle);
                     tvs.setText(" 버티기 설정 ");
 
                     final List<String> wheelValues = setCountTable();
                     WheelView wV = theView.findViewById(R.id.wheel);
                     wV.setItems(wheelValues);
-                    String val = ""+gxInfo.getHoldCount();
+                    String val = ""+ gymInfo.getHoldCount();
                     for (int i = 0; i < wheelValues.size(); i++)
                         if (wheelValues.get(i).equals(val))
                             wV.selectIndex(i);    // index pointer
@@ -346,8 +346,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             .setPositiveButton("SET",new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    gxInfo.setHoldCount(wheelValue);
-                                    gxInfos.set(currIdx, gxInfo);
+                                    gymInfo.setHoldCount(wheelValue);
+                                    gymInfos.set(currIdx, gymInfo);
                                     utils.saveSharedPrefTables();
                                     String s = ""+wheelValue;
                                     tvNowHoldCount.setText(s);
@@ -375,14 +375,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
-                    boolean tf = !gxInfo.isStep();
-                    gxInfo.setStep(tf);
+                    gymInfo = gymInfos.get(currIdx);
+                    boolean tf = !gymInfo.isStep();
+                    gymInfo.setStep(tf);
                     ivStep.setImageResource((tf) ? R.mipmap.icon_step_on:R.mipmap.icon_step_off);
                     ivStep.invalidate();
-                    gxInfos.set(currIdx, gxInfo);
+                    gymInfos.set(currIdx, gymInfo);
                     utils.saveSharedPrefTables();
-                    String s = (tf) ? (""+gxInfo.getStepCount()) : "";
+                    String s = (tf) ? (""+ gymInfo.getStepCount()) : "";
                     tvStepCount.setText(s);
                 }
             });
@@ -393,14 +393,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
-                    boolean tf = !gxInfo.isHold();
-                    gxInfo.setHold(tf);
-                    gxInfos.set(currIdx, gxInfo);
+                    gymInfo = gymInfos.get(currIdx);
+                    boolean tf = !gymInfo.isHold();
+                    gymInfo.setHold(tf);
+                    gymInfos.set(currIdx, gymInfo);
                     utils.saveSharedPrefTables();
                     ivHold.setImageResource((tf) ? R.mipmap.icon_hold_on:R.mipmap.icon_hold_off);
                     ivHold.invalidate();
-                    String s = (tf) ? (""+gxInfo.getHoldCount()) : "";
+                    String s = (tf) ? (""+ gymInfo.getHoldCount()) : "";
                     tvHoldCount.setText(s);
                 }
             });
@@ -411,14 +411,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
-                    int count = (gxInfo.getCountUpDown() + 1) % 4;
-                    gxInfo.setCountUpDown(count);
-                    gxInfos.set(currIdx, gxInfo);
+                    gymInfo = gymInfos.get(currIdx);
+                    int count = (gymInfo.getCountUpDown() + 1) % 4;
+                    gymInfo.setCountUpDown(count);
+                    gymInfos.set(currIdx, gymInfo);
                     utils.saveSharedPrefTables();
                     ivUpDown.setImageResource(countUpDowns[count]);
                     ivUpDown.invalidate();
-                    if (count > 1 && gxInfo.isStep())
+                    if (count > 1 && gymInfo.isStep())
                         Toast.makeText(mContext, "Count Up/Down 5 와 Step 을 같이 쓴다고? ",Toast.LENGTH_SHORT).show();
                 }
             });
@@ -429,10 +429,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
-                    boolean tf = !gxInfo.isSayReady();
-                    gxInfo.setSayReady(tf);
-                    gxInfos.set(currIdx, gxInfo);
+                    gymInfo = gymInfos.get(currIdx);
+                    boolean tf = !gymInfo.isSayReady();
+                    gymInfo.setSayReady(tf);
+                    gymInfos.set(currIdx, gymInfo);
                     utils.saveSharedPrefTables();
                     ivReady.setImageResource((tf)? R.mipmap.icon_ready_on:R.mipmap.icon_ready_off);
                     ivReady.invalidate();
@@ -445,10 +445,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
-                    boolean tf = !gxInfo.isSayStart();
-                    gxInfo.setSayStart(tf);
-                    gxInfos.set(currIdx, gxInfo);
+                    gymInfo = gymInfos.get(currIdx);
+                    boolean tf = !gymInfo.isSayStart();
+                    gymInfo.setSayStart(tf);
+                    gymInfos.set(currIdx, gymInfo);
                     utils.saveSharedPrefTables();
                     ivStart.setImageResource((tf) ? R.mipmap.icon_start_on:R.mipmap.icon_start_off);
                     ivStart.invalidate();
@@ -460,7 +460,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 public void onClick(View view) {
                     cdtRunning = true;
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
+                    gymInfo = gymInfos.get(currIdx);
                     nowTVMainCount = itemView.findViewById(R.id.mainCount);
                     nowTVStepCount = itemView.findViewById(R.id.stepCount);
                     nowTVHoldCount = itemView.findViewById(R.id.holdCount);
@@ -471,7 +471,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     nowIVStart = itemView.findViewById(R.id.start);
                     nowCard = itemView.findViewById(R.id.card_view);
                     if (speakName) {
-                        utils.ttsSpeak(gxInfo.getTypeName()+", , "+gxInfo.getMainCount()+" 회애");
+                        utils.ttsSpeak(gymInfo.getTypeName()+", , "+ gymInfo.getMainCount()+" 회애");
                         new Handler().postDelayed(new Runnable(){
                             @Override
                             public void run() {
@@ -487,7 +487,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View view) {
                     currIdx = getAdapterPosition();
-                    gxInfo = gxInfos.get(currIdx);
+                    gymInfo = gymInfos.get(currIdx);
                     shouter.stop();
                 }
             });
@@ -498,7 +498,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (cdtRunning)
                         return;
                     currIdx = getAdapterPosition();
-                    gxInfos.remove(currIdx);
+                    gymInfos.remove(currIdx);
                     utils.saveSharedPrefTables();
                     recyclerViewAdapter.notifyItemRemoved(currIdx);
                 }
@@ -511,12 +511,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         String s;
         LinearLayout.LayoutParams lpL, lpR;
-        GxInfo gxInfo = gxInfos.get(pos);
+        GymInfo gymInfo = gymInfos.get(pos);
         int textSize = (spanCount == 2) ? 20:16;
         lpL = (LinearLayout.LayoutParams) holder.tvTypeName.getLayoutParams();
         lpL.height = textSize * 60 / 10;
         lpL.weight = 5;    // no change
-        holder.tvTypeName.setText(gxInfo.getTypeName());
+        holder.tvTypeName.setText(gymInfo.getTypeName());
         holder.tvTypeName.setTextSize(textSize);
         holder.tvTypeName.setLayoutParams(lpL);
 
@@ -530,25 +530,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.tvSpeedTxt.setTextSize(textSize);
         holder.tvSpeed.setLayoutParams(lpR);
         holder.tvSpeed.setTextSize(textSize);
-        s = "" + gxInfo.getSpeed(); holder.tvSpeed.setText(s);
+        s = "" + gymInfo.getSpeed(); holder.tvSpeed.setText(s);
 
         holder.ivUpDown.setLayoutParams(lpL);
-        holder.ivUpDown.setImageResource(countUpDowns[gxInfo.getCountUpDown()]);
+        holder.ivUpDown.setImageResource(countUpDowns[gymInfo.getCountUpDown()]);
         holder.tvUpDownCount.setLayoutParams(lpR);
         holder.tvUpDownCount.setTextSize(textSize);
-        s = "" + gxInfo.getMainCount(); holder.tvUpDownCount.setText(s);
+        s = "" + gymInfo.getMainCount(); holder.tvUpDownCount.setText(s);
 
         holder.ivStep.setLayoutParams(lpL);
-        holder.ivStep.setImageResource((gxInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
+        holder.ivStep.setImageResource((gymInfo.isStep()) ? R.mipmap.icon_step_on : R.mipmap.icon_step_off);
         holder.tvStepCount.setLayoutParams(lpR);
         holder.tvStepCount.setTextSize(textSize);
-        s = (gxInfo.isStep()) ? ("" + gxInfo.getStepCount()) : ""; holder.tvStepCount.setText(s);
+        s = (gymInfo.isStep()) ? ("" + gymInfo.getStepCount()) : ""; holder.tvStepCount.setText(s);
 
         holder.ivHold.setLayoutParams(lpL);
-        holder.ivHold.setImageResource((gxInfo.isHold()) ? R.mipmap.icon_hold_on : R.mipmap.icon_hold_off);
+        holder.ivHold.setImageResource((gymInfo.isHold()) ? R.mipmap.icon_hold_on : R.mipmap.icon_hold_off);
         holder.tvHoldCount.setLayoutParams(lpR);
         holder.tvHoldCount.setTextSize(textSize);
-        s = (gxInfo.isHold()) ? ("" + gxInfo.getHoldCount()) : ""; holder.tvHoldCount.setText(s);
+        s = (gymInfo.isHold()) ? ("" + gymInfo.getHoldCount()) : ""; holder.tvHoldCount.setText(s);
 
         lpL = (LinearLayout.LayoutParams) holder.loReadyStart.getLayoutParams();
         lpL.weight = 45;
@@ -562,8 +562,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         holder.ivStart.setLayoutParams(lp);
         holder.ivReady.setLayoutParams(lp);
-        holder.ivReady.setImageResource(gxInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
-        holder.ivStart.setImageResource(gxInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
+        holder.ivReady.setImageResource(gymInfo.isSayReady() ? R.mipmap.icon_ready_on : R.mipmap.icon_ready_off);
+        holder.ivStart.setImageResource(gymInfo.isSayStart() ? R.mipmap.icon_start_on : R.mipmap.icon_start_off);
         holder.ivShout.setVisibility(View.VISIBLE);
         holder.ivStop.setVisibility(View.GONE);
     }

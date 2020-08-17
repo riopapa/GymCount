@@ -1,4 +1,4 @@
-package com.urrecliner.gxcount;
+package com.urrecliner.gymcount;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,21 +17,21 @@ import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 
-import static com.urrecliner.gxcount.Vars.gxInfos;
-import static com.urrecliner.gxcount.Vars.mActivity;
-import static com.urrecliner.gxcount.Vars.mContext;
-import static com.urrecliner.gxcount.Vars.recyclerView;
-import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
-import static com.urrecliner.gxcount.Vars.shouter;
-import static com.urrecliner.gxcount.Vars.sizeX;
-import static com.urrecliner.gxcount.Vars.spanCount;
-import static com.urrecliner.gxcount.Vars.speakName;
-import static com.urrecliner.gxcount.Vars.utils;
+import static com.urrecliner.gymcount.Vars.gymInfos;
+import static com.urrecliner.gymcount.Vars.mActivity;
+import static com.urrecliner.gymcount.Vars.mContext;
+import static com.urrecliner.gymcount.Vars.recyclerView;
+import static com.urrecliner.gymcount.Vars.recyclerViewAdapter;
+import static com.urrecliner.gymcount.Vars.shouter;
+import static com.urrecliner.gymcount.Vars.sizeX;
+import static com.urrecliner.gymcount.Vars.spanCount;
+import static com.urrecliner.gymcount.Vars.speakName;
+import static com.urrecliner.gymcount.Vars.utils;
 
-public class MainActivity extends AppCompatActivity {
+public class TrainActivity extends AppCompatActivity {
 
     private final static String logId = "main";
-    ArrayList<GxInfo> gxInfoArrayList;
+    ArrayList<GymInfo> gymInfoArrayList;
     SharedPreferences sharePrefer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
         mActivity = this;
         utils = new Utils();
         utils.soundInitiate();
-        sharePrefer = getApplicationContext().getSharedPreferences("gxCount", MODE_PRIVATE);
+        sharePrefer = getApplicationContext().getSharedPreferences("GymCount", MODE_PRIVATE);
         spanCount = sharePrefer.getInt("spanCount", 3);
         speakName = sharePrefer.getBoolean("speakName", true);
         recyclerViewAdapter = new RecyclerViewAdapter();
-        gxInfoArrayList = new MakeGxInfos().getGxArray();
-        gxInfos = utils.readSharedPrefTables();
-        if (gxInfos.size() == 0)
-            gxInfos = new MakeGxInfos().getGxArray();
+        gymInfoArrayList = new MakeGymInfos().getGymArray();
+        gymInfos = utils.readSharedPrefTables();
+        if (gymInfos.size() == 0)
+            gymInfos = new MakeGymInfos().getGymArray();
         sizeX = utils.getScreenWidth();
 
         prepareCards();
@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        for (int i = 0; i < gxInfoArrayList.size(); i++) {
-            menu.add(0, MENU_DEFAULT + i, Menu.NONE, "Add "+gxInfoArrayList.get(i).getTypeName());
+        for (int i = 0; i < gymInfoArrayList.size(); i++) {
+            menu.add(0, MENU_DEFAULT + i, Menu.NONE, "Add "+ gymInfoArrayList.get(i).getTypeName());
         }
-        menu.addSubMenu(0, MENU_DEFAULT + gxInfoArrayList.size(), Menu.NONE, "RESET ALL");
+        menu.addSubMenu(0, MENU_DEFAULT + gymInfoArrayList.size(), Menu.NONE, "RESET ALL");
 
         MenuItem item = menu.findItem(R.id.action_TwoThree);
         if (spanCount == 3)
@@ -93,24 +93,24 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id >= MENU_DEFAULT && id < MENU_DEFAULT +gxInfoArrayList.size()) {
+        if (id >= MENU_DEFAULT && id < MENU_DEFAULT + gymInfoArrayList.size()) {
             id = id - MENU_DEFAULT;
-            GxInfo gxNew = gxInfoArrayList.get(id);
-            String s = gxNew.getTypeName();
-            for (int i = 0; i < gxInfos.size(); i++)
-                if (gxInfos.get(i).getTypeName().equals(s))
+            GymInfo gymNew = gymInfoArrayList.get(id);
+            String s = gymNew.getTypeName();
+            for (int i = 0; i < gymInfos.size(); i++)
+                if (gymInfos.get(i).getTypeName().equals(s))
                     s += "1";
-            gxNew.setTypeName(s);
-            gxInfos.add(gxInfos.size(),gxNew);
+            gymNew.setTypeName(s);
+            gymInfos.add(gymInfos.size(),gymNew);
             utils.saveSharedPrefTables();
-            recyclerViewAdapter.notifyItemChanged(gxInfos.size());
+            recyclerViewAdapter.notifyItemChanged(gymInfos.size());
             return true;
         }
-        else if (id == MENU_DEFAULT +gxInfoArrayList.size()) { // reset menu
-            gxInfos = new MakeGxInfos().getGxArray();
+        else if (id == MENU_DEFAULT + gymInfoArrayList.size()) { // reset menu
+            gymInfos = new MakeGymInfos().getGymArray();
             utils.saveSharedPrefTables();
             finish();
-            Intent intent=new Intent(MainActivity.this,MainActivity.class);
+            Intent intent=new Intent(TrainActivity.this, TrainActivity.class);
             startActivity(intent);
         }
 

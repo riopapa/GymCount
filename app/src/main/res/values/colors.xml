@@ -12,7 +12,7 @@
 
     <color name="countBack">#7FFF00</color>
     <color name="countFore">#000080</color>
-
+    <color name="help">#cccc00</color>
     <color name="wheelBack">#6AA121</color>
 
 </resources>

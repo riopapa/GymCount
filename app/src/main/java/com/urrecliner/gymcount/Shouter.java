@@ -1,30 +1,30 @@
-package com.urrecliner.gxcount;
+package com.urrecliner.gymcount;
 
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import static com.urrecliner.gxcount.Vars.cdtRunning;
-import static com.urrecliner.gxcount.Vars.currIdx;
-import static com.urrecliner.gxcount.Vars.gxInfo;
-import static com.urrecliner.gxcount.Vars.gxInfos;
-import static com.urrecliner.gxcount.Vars.mContext;
-import static com.urrecliner.gxcount.Vars.nowCard;
-import static com.urrecliner.gxcount.Vars.nowIVShout;
-import static com.urrecliner.gxcount.Vars.nowIVStop;
-import static com.urrecliner.gxcount.Vars.nowTVHoldCount;
-import static com.urrecliner.gxcount.Vars.nowTVMainCount;
-import static com.urrecliner.gxcount.Vars.nowTVStepCount;
-import static com.urrecliner.gxcount.Vars.recyclerViewAdapter;
-import static com.urrecliner.gxcount.Vars.sndShortTbl;
-import static com.urrecliner.gxcount.Vars.sndSpecialTbl;
-import static com.urrecliner.gxcount.Vars.sndTbl;
-import static com.urrecliner.gxcount.Vars.sndTenTbl;
-import static com.urrecliner.gxcount.Vars.soundTable;
-import static com.urrecliner.gxcount.Vars.soundText;
-import static com.urrecliner.gxcount.Vars.soundTime;
-import static com.urrecliner.gxcount.Vars.utils;
+import static com.urrecliner.gymcount.Vars.cdtRunning;
+import static com.urrecliner.gymcount.Vars.currIdx;
+import static com.urrecliner.gymcount.Vars.gymInfo;
+import static com.urrecliner.gymcount.Vars.gymInfos;
+import static com.urrecliner.gymcount.Vars.mContext;
+import static com.urrecliner.gymcount.Vars.nowCard;
+import static com.urrecliner.gymcount.Vars.nowIVShout;
+import static com.urrecliner.gymcount.Vars.nowIVStop;
+import static com.urrecliner.gymcount.Vars.nowTVHoldCount;
+import static com.urrecliner.gymcount.Vars.nowTVMainCount;
+import static com.urrecliner.gymcount.Vars.nowTVStepCount;
+import static com.urrecliner.gymcount.Vars.recyclerViewAdapter;
+import static com.urrecliner.gymcount.Vars.sndStepTbl;
+import static com.urrecliner.gymcount.Vars.sndSpecialTbl;
+import static com.urrecliner.gymcount.Vars.sndTbl;
+import static com.urrecliner.gymcount.Vars.sndTenTbl;
+import static com.urrecliner.gymcount.Vars.soundTable;
+import static com.urrecliner.gymcount.Vars.soundText;
+import static com.urrecliner.gymcount.Vars.soundTime;
+import static com.urrecliner.gymcount.Vars.utils;
 
 class Shouter {
     private final static String MAIN_PREFIX = "m";
@@ -47,43 +47,43 @@ class Shouter {
     }
 
     private void calcDelayTime() {
-        gxInfo = gxInfos.get(currIdx);
-        delayTime = 1000 * 60 / gxInfo.getSpeed();
+        gymInfo = gymInfos.get(currIdx);
+        delayTime = 1000 * 60 / gymInfo.getSpeed();
     }
 
 
     private void setupSoundTable() {
         int tblSize;
         int countUpDown;
-        gxInfo = gxInfos.get(currIdx);
-        if (gxInfo.isStep())
-            tblSize = (gxInfo.getStepCount()+1) * gxInfo.getMainCount();
+        gymInfo = gymInfos.get(currIdx);
+        if (gymInfo.isStep())
+            tblSize = (gymInfo.getStepCount()+1) * gymInfo.getMainCount();
         else
-            tblSize = gxInfo.getMainCount();
-        tblSize += ((gxInfo.isHold())? gxInfo.getHoldCount() : 0) + 5;
+            tblSize = gymInfo.getMainCount();
+        tblSize += ((gymInfo.isHold())? gymInfo.getHoldCount() : 1) + 5;
         soundTable = new int[tblSize];
         soundText = new String[tblSize];
         soundTime = new int[tblSize];
         sIdx = 0;
-        if (gxInfo.isSayReady()) {
+        if (gymInfo.isSayReady()) {
             soundTable[sIdx] = sndSpecialTbl[3];   // R.raw.i_ready
             soundText[sIdx] = NONE_PREFIX;
             soundTime[sIdx] = 2500;
             sIdx++;
         }
-        if (gxInfo.isSayStart()) {
+        if (gymInfo.isSayStart()) {
             soundTable[sIdx] = sndSpecialTbl[2];   // R.raw.i_start
             soundText[sIdx] = NONE_PREFIX;
             soundTime[sIdx] = 2500;
             sIdx++;
         }
 
-        countUpDown = gxInfo.getCountUpDown();
+        countUpDown = gymInfo.getCountUpDown();
         if ( countUpDown == 0 || countUpDown == 2) {    // count up
-            int max = gxInfo.getMainCount() + (gxInfo.isStep() ? 1:0);
+            int max = gymInfo.getMainCount() + (gymInfo.isStep() ? 1:0);
             for (int i = 1; i <= max; i++) {
-                if (gxInfo.isStep())
-                    addStepSound(gxInfo.getStepCount());
+                if (gymInfo.isStep())
+                    addStepSound(gymInfo.getStepCount());
                 if (i < 21) {
                     soundTable[sIdx] = (countUpDown == 0 || i >= (max-5)) ? sndTbl[i]: sndTbl[0];
                 }
@@ -102,9 +102,9 @@ class Shouter {
             }
         }
         else {
-            for (int i = gxInfo.getMainCount(); i > 0; i--) {
-                if (gxInfo.isStep())
-                    addStepSound(gxInfo.getStepCount());
+            for (int i = gymInfo.getMainCount(); i > 0; i--) {
+                if (gymInfo.isStep())
+                    addStepSound(gymInfo.getStepCount());
                 if (i < 21) {
                     soundTable[sIdx] = (countUpDown == 1 || i <= 5) ? sndTbl[i]: sndTbl[0];
                 }
@@ -122,14 +122,14 @@ class Shouter {
                 sIdx++;
             }
         }
-        if (gxInfo.isStep())
+        if (gymInfo.isStep())
             sIdx--;
-        if (gxInfo.isHold()) {
+        if (gymInfo.isHold()) {
             soundTable[sIdx] = sndSpecialTbl[0];
             soundText[sIdx] = NONE_PREFIX;
             soundTime[sIdx] = 1000;
             sIdx++;
-            for (int i = gxInfo.getHoldCount(); i >= 1; i--) {
+            for (int i = gymInfo.getHoldCount(); i >= 1; i--) {
                 int mod = i%10;
                 if (mod == 0) {
                     int j = i / 10;
@@ -151,7 +151,7 @@ class Shouter {
 
     private void addStepSound(int maxi) {
         for (int i = 1; i < maxi; i++) {
-            soundTable[sIdx] = sndShortTbl[i];
+            soundTable[sIdx] = sndStepTbl[i%4];
             soundText[sIdx] = STEP_PREFIX + i;
             soundTime[sIdx] = delayTime;
             sIdx++;
