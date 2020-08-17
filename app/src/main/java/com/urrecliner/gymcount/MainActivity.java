@@ -15,6 +15,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import java.util.ArrayList;
+
 import static com.urrecliner.gymcount.Vars.gymOptionList;
 import static com.urrecliner.gymcount.Vars.gymInfos;
 import static com.urrecliner.gymcount.Vars.mActivity;
@@ -107,12 +109,14 @@ public class MainActivity extends AppCompatActivity {
                 if (gymInfos.get(i).getTypeName().equals(s))
                     s += "1";
             gymNew.setTypeName(s);
+            gymNew.setId(makeGymInfos.getNextId(0));
             gymInfos.add(gymInfos.size(),gymNew);
             utils.saveSharedPrefTables();
             recyclerViewAdapter.notifyItemChanged(gymInfos.size());
             return true;
         }
         else if (id == MENU_DEFAULT + gymOptionList.size()) { // reset menu
+            gymInfos = new ArrayList<>();
             for (GymInfo g : gymOptionList) {
                 gymInfos.add(g);
             }

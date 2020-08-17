@@ -18,10 +18,10 @@ public class GymInfo {
     private boolean sayReady;
     private int repeatCount;
     private int pauseSeconds;
-
     GymInfo(String typeName, int speed, int mainCount, boolean step, int stepCount, boolean hold, int holdCount,
             int countUpDown, boolean sayStart, boolean sayReady, int repeatCount, int pauseSeconds) {
-        this.id = makeGymInfos.getNextId(nextOKId);
+        nextOKId = makeGymInfos.getNextId(nextOKId);
+        this.id = nextOKId;
         this.typeName = typeName;
         this.speed = speed;
         this.mainCount = mainCount;

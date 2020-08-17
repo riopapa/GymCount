@@ -24,19 +24,22 @@ class MakeGymInfos {
 
     int getNextId(int id) {
         id++;
+        if (gymInfos == null)
+            return id;
         while (true) {
-            if (gymInfos != null) {
-                for (GymInfo g : gymInfos) {
-                    if (id == g.getId()) {
-                        id++;
-                        continue;
-                    }
-                }
-                break;
-            }
+            if(isUsed(id))
+                id++;
             else
                 break;
         }
         return id;
+    }
+    boolean isUsed (int id) {
+        for (GymInfo g : gymInfos) {
+            if (id == g.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

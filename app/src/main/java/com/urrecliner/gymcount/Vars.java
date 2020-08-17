@@ -54,5 +54,5 @@ class Vars {
     static String [] soundText;
     static Shouter shouter = new Shouter();
     static boolean speakName = true;
-    static int nextOKId = 1;
+    static int nextOKId = 0;
 }
