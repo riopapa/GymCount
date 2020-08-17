@@ -177,8 +177,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 List <String> getSpeedTable() {
                     List<String> result = new ArrayList<>();
-                    for (int i = SPEED_MIN; i < 25; i++) result.add("" + i);
-                    for (int i = 25; i <= SPEED_MAX; i+= 5) result.add("" + i);
+                    for (int i = SPEED_MIN; i < 30; i++) result.add("" + i);
+                    for (int i = 30; i <= SPEED_MAX; i+= 5) result.add("" + i);
                     return result;
                 }
             });

@@ -12,9 +12,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 class Vars {
-    static SharedPreferences sharedPreferences;
+    static SharedPreferences prefer;
 
     static ArrayList<GymInfo> gymInfos;
+    static ArrayList<GymInfo> gymOptionList;
     static GymInfo gymInfo;
     static RecyclerViewAdapter recyclerViewAdapter;
 
@@ -25,6 +26,7 @@ class Vars {
     @SuppressLint("StaticFieldLeak")
     static RecyclerView recyclerView;
     static Utils utils;
+    static MakeGymInfos makeGymInfos;
     static int currIdx;
     static boolean cdtRunning;
     static int spanCount;
@@ -52,5 +54,5 @@ class Vars {
     static String [] soundText;
     static Shouter shouter = new Shouter();
     static boolean speakName = true;
-
+    static int nextOKId = 1;
 }

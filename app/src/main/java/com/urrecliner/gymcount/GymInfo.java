@@ -1,8 +1,11 @@
 package com.urrecliner.gymcount;
 
+import static com.urrecliner.gymcount.Vars.makeGymInfos;
+import static com.urrecliner.gymcount.Vars.nextOKId;
+
 public class GymInfo {
 
-    private long id;
+    private int id;
     private String typeName;
     private int speed;
     private int mainCount;
@@ -18,7 +21,7 @@ public class GymInfo {
 
     GymInfo(String typeName, int speed, int mainCount, boolean step, int stepCount, boolean hold, int holdCount,
             int countUpDown, boolean sayStart, boolean sayReady, int repeatCount, int pauseSeconds) {
-        this.id = System.currentTimeMillis();
+        this.id = makeGymInfos.getNextId(nextOKId);
         this.typeName = typeName;
         this.speed = speed;
         this.mainCount = mainCount;
@@ -33,8 +36,8 @@ public class GymInfo {
         this.pauseSeconds = pauseSeconds;
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     String getTypeName() {
         return typeName;
@@ -111,5 +114,6 @@ public class GymInfo {
 
     public int getPauseSeconds() { return pauseSeconds; }
     public void setPauseSeconds(int pauseSeconds) { this.pauseSeconds = pauseSeconds; }
+
 
 }

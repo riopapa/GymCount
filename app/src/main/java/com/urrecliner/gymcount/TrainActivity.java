@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import static com.urrecliner.gymcount.Vars.gymInfos;
 import static com.urrecliner.gymcount.Vars.mActivity;
 import static com.urrecliner.gymcount.Vars.mContext;
+import static com.urrecliner.gymcount.Vars.makeGymInfos;
 import static com.urrecliner.gymcount.Vars.recyclerView;
 import static com.urrecliner.gymcount.Vars.recyclerViewAdapter;
 import static com.urrecliner.gymcount.Vars.shouter;
@@ -45,10 +46,10 @@ public class TrainActivity extends AppCompatActivity {
         spanCount = sharePrefer.getInt("spanCount", 3);
         speakName = sharePrefer.getBoolean("speakName", true);
         recyclerViewAdapter = new RecyclerViewAdapter();
-        gymInfoArrayList = new MakeGymInfos().getGymArray();
+        makeGymInfos.makeGymOptionList();
         gymInfos = utils.readSharedPrefTables();
-        if (gymInfos.size() == 0)
-            gymInfos = new MakeGymInfos().getGymArray();
+//        if (gymInfos.size() == 0)
+//            gymInfos = new MakeGymInfos().makeGymDefaultList();
         sizeX = utils.getScreenWidth();
 
         prepareCards();
@@ -107,7 +108,7 @@ public class TrainActivity extends AppCompatActivity {
             return true;
         }
         else if (id == MENU_DEFAULT + gymInfoArrayList.size()) { // reset menu
-            gymInfos = new MakeGymInfos().getGymArray();
+            makeGymInfos.makeGymOptionList();
             utils.saveSharedPrefTables();
             finish();
             Intent intent=new Intent(TrainActivity.this, TrainActivity.class);

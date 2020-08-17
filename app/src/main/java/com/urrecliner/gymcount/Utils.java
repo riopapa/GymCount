@@ -25,7 +25,7 @@ import java.util.Locale;
 import static com.urrecliner.gymcount.Vars.gymInfos;
 import static com.urrecliner.gymcount.Vars.mActivity;
 import static com.urrecliner.gymcount.Vars.mContext;
-import static com.urrecliner.gymcount.Vars.sharedPreferences;
+import static com.urrecliner.gymcount.Vars.prefer;
 import static com.urrecliner.gymcount.Vars.sndStepTbl;
 import static com.urrecliner.gymcount.Vars.sndSpecialTbl;
 import static com.urrecliner.gymcount.Vars.sndTbl;
@@ -101,8 +101,7 @@ class Utils {
 
     void saveSharedPrefTables() {
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        SharedPreferences.Editor prefsEditor = prefer.edit();
         Gson gson = new Gson();
         String json = gson.toJson(gymInfos);
         prefsEditor.putString("GymInfo", json);
@@ -112,9 +111,8 @@ class Utils {
     ArrayList<GymInfo> readSharedPrefTables() {
 
         ArrayList<GymInfo> list;
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("GymInfo", "");
+        String json = prefer.getString("GymInfo", "");
         if (json.isEmpty()) {
             list = new ArrayList<>();
         } else {
