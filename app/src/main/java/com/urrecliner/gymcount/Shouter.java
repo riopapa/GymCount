@@ -2,7 +2,6 @@ package com.urrecliner.gymcount;
 
 import android.os.AsyncTask;
 import android.os.SystemClock;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import static com.urrecliner.gymcount.Vars.cdtRunning;
@@ -25,6 +24,8 @@ import static com.urrecliner.gymcount.Vars.soundTable;
 import static com.urrecliner.gymcount.Vars.soundText;
 import static com.urrecliner.gymcount.Vars.soundTime;
 import static com.urrecliner.gymcount.Vars.utils;
+
+import androidx.core.content.ContextCompat;
 
 class Shouter {
     private final static String MAIN_PREFIX = "m";
@@ -82,7 +83,7 @@ class Shouter {
         if ( countUpDown == 0 || countUpDown == 2) {    // count up
             int max = gymInfo.getMainCount() + (gymInfo.isStep() ? 1:0);
             for (int i = 1; i <= max; i++) {
-                if (gymInfo.isStep())
+                if (gymInfo.isStep() && i != max)
                     addStepSound(gymInfo.getStepCount());
                 if (i < 21) {
                     soundTable[sIdx] = (countUpDown == 0 || i >= (max-5)) ? sndTbl[i]: sndTbl[0];

@@ -1,14 +1,25 @@
 package com.urrecliner.gymcount;
 
+import static com.urrecliner.gymcount.Vars.gymInfos;
+import static com.urrecliner.gymcount.Vars.mActivity;
+import static com.urrecliner.gymcount.Vars.mContext;
+import static com.urrecliner.gymcount.Vars.prefer;
+import static com.urrecliner.gymcount.Vars.sndSpecialTbl;
+import static com.urrecliner.gymcount.Vars.sndStepTbl;
+import static com.urrecliner.gymcount.Vars.sndTbl;
+import static com.urrecliner.gymcount.Vars.sndTenTbl;
+import static com.urrecliner.gymcount.Vars.soundSource;
+import static com.urrecliner.gymcount.Vars.soundSpecial;
+import static com.urrecliner.gymcount.Vars.soundStep;
+import static com.urrecliner.gymcount.Vars.soundTenSource;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Display;
@@ -21,19 +32,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static com.urrecliner.gymcount.Vars.gymInfos;
-import static com.urrecliner.gymcount.Vars.mActivity;
-import static com.urrecliner.gymcount.Vars.mContext;
-import static com.urrecliner.gymcount.Vars.prefer;
-import static com.urrecliner.gymcount.Vars.sndStepTbl;
-import static com.urrecliner.gymcount.Vars.sndSpecialTbl;
-import static com.urrecliner.gymcount.Vars.sndTbl;
-import static com.urrecliner.gymcount.Vars.sndTenTbl;
-import static com.urrecliner.gymcount.Vars.soundSource;
-import static com.urrecliner.gymcount.Vars.soundSpecial;
-import static com.urrecliner.gymcount.Vars.soundStep;
-import static com.urrecliner.gymcount.Vars.soundTenSource;
 
 class Utils {
 
@@ -134,23 +132,17 @@ class Utils {
 
     void soundInitiate() {
 
-        SoundPool.Builder builder;
-//        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-//                .setUsage(AudioAttributes.USAGE_MEDIA)
-//                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-//                .build();
-//
 //        builder = new SoundPool.Builder();
 //        builder.setAudioAttributes(audioAttributes).setMaxStreams(5);
 //        soundPool = builder.build();
 
-        AudioAttributes attributes = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build();
-        soundPool = new SoundPool.Builder().setAudioAttributes(attributes).setMaxStreams(5).build();
-
+//        AudioAttributes attributes = new AudioAttributes.Builder()
+//                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH) //.CONTENT_TYPE_MUSIC)
+//                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+//                .setUsage(AudioAttributes.USAGE_NOTIFICATION) // .USAGE_MEDIA)
+//                .build();
+//        soundPool = new SoundPool.Builder().setAudioAttributes(attributes).setMaxStreams(5).build();
+        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);    // bluetooth is OK
         sndTbl = new int[soundSource.length];
         sndTenTbl = new int[soundTenSource.length];
         sndStepTbl = new int[soundStep.length];
@@ -170,17 +162,6 @@ class Utils {
     }
 
     void beepSound(int soundId, float volume) {
-//        if (soundPool == null) {
-//            soundInitiate();
-//            final int id = soundId;
-//            final float vol = volume;
-//            Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    soundPool.play(soundId, volume, volume, 1, 0, speeds);
-//                }
-//            }, 1000);
-//        }
         if (soundPool == null) {
             soundInitiate();
             Toast.makeText(mContext, "soundPool reInitiated",Toast.LENGTH_LONG).show();

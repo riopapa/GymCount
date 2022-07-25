@@ -9,8 +9,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.ViewCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -18,8 +16,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.OverScroller;
+
+import androidx.core.view.GestureDetectorCompat;
+import androidx.core.view.ViewCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class WheelView extends View implements GestureDetector.OnGestureListener
 
 	private int mMarkCount;
 	private float mAdditionCenterMarkWidth;
-	private Path mCenterIndicatorPath = new Path();
+	private final Path mCenterIndicatorPath = new Path();
 	private float mCursorSize;
 	private int mViewScopeSize;
 

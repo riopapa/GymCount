@@ -1,10 +1,8 @@
 package com.urrecliner.gymcount;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +37,9 @@ import static com.urrecliner.gymcount.Vars.spanCount;
 import static com.urrecliner.gymcount.Vars.speakName;
 import static com.urrecliner.gymcount.Vars.utils;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>  {
 
     @Override
@@ -46,7 +47,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return gymInfos.size();
     }
 
-    @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.one_train, parent, false);
         return new ViewHolder(view);

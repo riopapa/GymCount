@@ -3,10 +3,6 @@ package com.urrecliner.gymcount;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -30,6 +26,11 @@ import static com.urrecliner.gymcount.Vars.sizeX;
 import static com.urrecliner.gymcount.Vars.spanCount;
 import static com.urrecliner.gymcount.Vars.speakName;
 import static com.urrecliner.gymcount.Vars.utils;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class MainActivity extends AppCompatActivity {
 
